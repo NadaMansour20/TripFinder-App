@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
 import 'Login.dart';
 
 class GetStartedClass extends StatelessWidget {
 
-  String welcomeImage = "images/welcometotripfinder.jpg";
+  String welcomeImage = "assets/images/welcometotripfinder.jpg";
   String textWelcome = "Ready to uncover your next adventure?";
-  String welcomeDescription =
-      "Let TripFinder guide you to unforgettable destinations! ";
+  String welcomeDescription = "Let TripFinder guide you to unforgettable destinations! ";
   static const String routName = "getStartedClass";
 
   @override
@@ -35,39 +35,12 @@ class GetStartedClass extends StatelessWidget {
                 style: const TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.all(50),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  gradient: const LinearGradient(
-                colors: [
-                  Color(0xFFFFC1E3), // وردي فاتح
-                  Color(0xFFBA68C8), // بنفسجي فاتح
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              )),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent, // لجعل خلفية الزر شفافة
-                    shadowColor: Colors.transparent, // إزالة الظل الافتراضي
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                ),
-                  onPressed: () {
-
-                  Navigator.pushNamed(context,Login.routName);
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Center(
-                        child: Text(
-                      "Get Started",
-                      style: TextStyle(color: Colors.white),
-                    )),
-                  )),
-            )
+            CustomButton(
+              onTap: () {
+                Navigator.pushNamed(context, Login.routName);
+              },
+              buttonText: "Get Started",
+            ),
           ],
         ),
       ),

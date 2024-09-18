@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/GetStartedClass.dart';
 import 'package:tripfinder_app/Login.dart';
+import 'package:tripfinder_app/Register.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -16,6 +18,7 @@ class MyApp extends StatelessWidget {
       routes: {
         GetStartedClass.routName:(BuildContext)=>GetStartedClass(),
         Login.routName:(BuildContext)=>Login(),
+        Register.routName:(BuildContext)=>Register(),
       },
 
     );
