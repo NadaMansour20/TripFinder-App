@@ -43,10 +43,10 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ],
-              ),
+              ),//git hub
               const SizedBox(height: 15),
               const CustomTextField(
-                hintText: "User Name",
+                hintText: "Username",
               ),
               const SizedBox(height: 15),
               const CustomTextField(
