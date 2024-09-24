@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomTextField.dart';
+import 'package:tripfinder_app/MainScreen.dart';
 import 'package:tripfinder_app/Register.dart';
 
 class Login extends StatefulWidget {
@@ -70,7 +71,7 @@ class _LoginState extends State<Login> {
                 const SizedBox(height: 15),
                 CustomButton(
                   onTap: () {
-                    Navigator.pushNamed(context, Login.routName);
+                    Navigator.pushNamed(context,MainScreen.routName);
                   },
                   buttonText: "Sign In",
                 ),

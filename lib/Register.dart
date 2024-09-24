@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomTextField.dart';
+import 'package:tripfinder_app/Login.dart';
 
 class Register extends StatefulWidget {
   static const String routName = "register";
@@ -27,7 +28,7 @@ class _RegisterState extends State<Register> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset("assets/images/register_logo.jpg"),
-              const SizedBox(height: 20),
+              const SizedBox(height:25),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -77,7 +78,7 @@ class _RegisterState extends State<Register> {
               const SizedBox(height: 15),
               CustomButton(
                 onTap: () {
-                  Navigator.pushNamed(context,Register.routName);
+                  Navigator.pushNamed(context,Login.routName);
                 },
                 buttonText: "Sign UP",
               ),

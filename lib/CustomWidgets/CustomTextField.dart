@@ -23,25 +23,20 @@ class CustomTextField extends StatelessWidget {
       child: TextField(
         obscureText: isPasswordField ? isObscure : false,
         decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(
-            color: Colors.grey,
-            fontWeight: FontWeight.bold,
-          ),
+          labelText: hintText,
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(
-              color: Colors.grey,
+              color:  Color(0xFFBA68C8),
             ),
           ),
           border: const OutlineInputBorder(
             borderSide: BorderSide(
-              color: Color(0xFFFFC1E3), // لون وردي فاتح
+              color: Color(0xFFBA68C8),
             ),
           ),
           suffixIcon: isPasswordField
               ? IconButton(
-            icon: suffixIcon ??
-                Icon(
+            icon: suffixIcon ?? Icon(
                   isObscure ? Icons.visibility : Icons.visibility_off,
                   color: Colors.grey,
                 ),
