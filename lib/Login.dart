@@ -95,7 +95,7 @@ class _LoginState extends State<Login> {
                           });
                           //بيانات جاية من المستقب
                           try {
-                            await userRegister(); //
+                            await userlogin(); //
                             showSnackBar(context, 'Operation Success');
                             Navigator.pushNamed(context, HomePage.routName);
                             // Navigator.pushNamed(context, Register.routName);
@@ -145,7 +145,7 @@ class _LoginState extends State<Login> {
           )),
     );
   }
-  Future<void> userRegister() async {
+  Future<void> userlogin() async {
     UserCredential user = await //
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email!, password: pass!); //
