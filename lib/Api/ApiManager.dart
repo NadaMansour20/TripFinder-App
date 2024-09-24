@@ -17,7 +17,10 @@ class ApiManager{
       'q':'allhotels', // all hotels
       'engine':'google_hotels',
       'check_in_date':'2024-12-26',
-      'check_out_date':'2024-12-30'
+      'check_out_date':'2024-12-30',
+    // "gl": "eg",
+    // "hl": "ar",
+    // "currency": "EGP",
     });
 
     var response=await http.get(uri);
