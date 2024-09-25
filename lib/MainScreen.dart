@@ -48,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage("assets/images/search.jpg")),
-              label: "Search",
+              label: "Save",
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage("assets/images/profile.jpg")),

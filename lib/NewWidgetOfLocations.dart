@@ -16,7 +16,7 @@ class NewWidgetOfLocations extends StatefulWidget {
 class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
   @override
   Widget build(BuildContext context) {
-    // التحقق من وجود الصور قبل محاولة الوصول إليها
+
     String? imageUrl = (widget.hotel.images != null && widget.hotel.images!.isNotEmpty)
         ? widget.hotel.images![0].thumbnail
         : null;
