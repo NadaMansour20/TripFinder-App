@@ -3,7 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tripfinder_app/Api/HotelsModel.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
-import 'package:tripfinder_app/GoogleMap.dart';
+import 'package:tripfinder_app/Ui/GoogleMap.dart';
 
 class HotelDetails extends StatefulWidget {
   static const String routName = "hotel_details";
@@ -21,23 +21,18 @@ class _HotelDetailsState extends State<HotelDetails> {
 
   @override
   void dispose() {
-    _pageController.dispose(); // تأكد من التخلص من PageController عند الانتهاء
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // جمع الصور من بيانات الفندق
-    List<String?>? imageUrls =
-    widget.hotel.images?.map((image) => image.thumbnail).toList();
-
-    // جمع وسائل الراحة من بيانات الفندق
+    List<String?>? imageUrls = widget.hotel.images?.map((image) => image.thumbnail).toList();
+    final List<Ratings>? reviews = widget.hotel.ratings; // قائمة المراجعات
     List<String?>? amenities = widget.hotel.amenities?.toList();
 
-    double? latitude=widget.hotel.gpsCoordinates?.latitude?.toDouble();
-    double? longitude=widget.hotel.gpsCoordinates?.longitude?.toDouble();
-
-
+    double? latitude = widget.hotel.gpsCoordinates?.latitude?.toDouble();
+    double? longitude = widget.hotel.gpsCoordinates?.longitude?.toDouble();
 
     return Scaffold(
       appBar: AppBar(
@@ -49,28 +44,27 @@ class _HotelDetailsState extends State<HotelDetails> {
           children: [
             imageUrls != null && imageUrls.isNotEmpty
                 ? Container(
-              height: MediaQuery.of(context).size.height / 3, // تحديد ارتفاع الربع
+              height: MediaQuery.of(context).size.height / 3,
               child: Stack(
                 children: [
                   PageView.builder(
-                    controller: _pageController, // ربط PageController بـ PageView
+                    controller: _pageController,
                     itemCount: imageUrls.length,
                     itemBuilder: (context, index) {
                       return Image.network(
                         imageUrls[index]!,
                         fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width, // عرض الصورة بالكامل
+                        width: MediaQuery.of(context).size.width,
                       );
                     },
                   ),
-                  // إضافة النقاط أعلى الصورة باستخدام Positioned
                   Positioned(
-                    bottom: 16, // تحديد موقع النقاط على الصورة (16 من الأسفل)
+                    bottom: 16,
                     left: 0,
                     right: 0,
                     child: Center(
                       child: SmoothPageIndicator(
-                        controller: _pageController, // ربط PageController بالمؤشر
+                        controller: _pageController,
                         count: imageUrls.length,
                         effect: ExpandingDotsEffect(
                           dotHeight: 8,
@@ -108,7 +102,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                           padding: const EdgeInsets.all(5),
                           child: RatingBarIndicator(
                             rating: widget.hotel.overallRating!.toDouble(),
-                            itemBuilder: (context, index) => Icon(
+                            itemBuilder: (context, index) => const Icon(
                               Icons.star,
                               color: Colors.amber,
                             ),
@@ -120,21 +114,40 @@ class _HotelDetailsState extends State<HotelDetails> {
                       ],
                     ),
                     SizedBox(height: 3),
-
-                    Text(
-                      "${widget.hotel.ratePerNight?.lowest?.toString() ?? '0'}",
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[700]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.hotel.ratePerNight?.lowest?.toString() ?? '0',
+                          style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // افتح حوار المراجعات
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return HotelReviewsDialog(reviews: reviews ?? []);
+                              },
+                            );
+                          },
+                          child: Text(
+                            "${widget.hotel.reviews ?? 0} reviews",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
+                    const Text(
                       "/night",
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(height: 3),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
+                    const Padding(
+                      padding: EdgeInsets.all(10),
                       child: Text(
                         "HOUSE AMENITIES",
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -144,25 +157,28 @@ class _HotelDetailsState extends State<HotelDetails> {
                     for (int i = 0; i < amenities!.length; i++)
                       Row(
                         children: [
-                          // إضافة الأيقونة بناءً على نوع وسيلة الراحة
                           Icon(
-                                Icons.check,
+                            Icons.check,
                             color: Colors.purple[200],
                           ),
                           SizedBox(width: 10),
                           Text(amenities[i]!),
                         ],
                       ),
-                    SizedBox(height: 15,),
-                    ElevatedButton(onPressed:() {
-                      GoogleMap.openMap(latitude!, longitude!);
-                    }
-                    , child:Text("GPS") ),
-                    SizedBox(height: 3),
-                    CustomButton(onTap:(){
+                    SizedBox(height: 15),
 
-                      //add to cart
-                    }, buttonText:"addToCart"
+                    ElevatedButton(
+                      onPressed: () {
+                        GoogleMap.openMap(latitude!, longitude!);
+                      },
+                      child: Text("GPS"),
+                    ),
+                    SizedBox(height: 3),
+                    CustomButton(
+                      onTap: () {
+                        // add to cart
+                      },
+                      buttonText: "addToCart",
                     ),
                   ],
                 ),
@@ -171,6 +187,39 @@ class _HotelDetailsState extends State<HotelDetails> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class HotelReviewsDialog extends StatelessWidget {
+  final List<Ratings> reviews;
+
+  HotelReviewsDialog({required this.reviews});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Reviews"),
+      content: Container(
+        width: double.maxFinite, // يجعل الحوار أعرض
+        child: ListView.builder(
+          itemCount: reviews.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(reviews[index].stars.toString() + " Stars"),
+              subtitle: Text("Count: ${reviews[index].count}"),
+            );
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // إغلاق الحوار
+          },
+          child: Text("Close"),
+        ),
+      ],
     );
   }
 }

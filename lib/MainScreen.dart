@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tripfinder_app/HomeScreen.dart';
-import 'package:tripfinder_app/ProfileScreen.dart';
-import 'package:tripfinder_app/SearchScreen.dart';
+import 'package:tripfinder_app/Ui/HomeScreen.dart';
+import 'package:tripfinder_app/Ui/ProfileScreen.dart';
+import 'package:tripfinder_app/Ui/SaveScreen.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routName = "mainScreen";
@@ -47,8 +47,9 @@ class _MainScreenState extends State<MainScreen> {
               label: "Home",
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage("assets/images/search.jpg")),
+              icon: ImageIcon(AssetImage("assets/images/save.png"),),
               label: "Save",
+
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage("assets/images/profile.jpg")),
@@ -68,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
     );
 
   }
-  List<Widget> ListOfTabs=[HomeScreen(),SearchScreen(),ProfileScreen()];
+  List<Widget> ListOfTabs=[HomeScreen(),SaveScreen(),ProfileScreen()];
 
 
 }

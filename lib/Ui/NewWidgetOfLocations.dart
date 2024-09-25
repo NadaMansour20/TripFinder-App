@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/Api/HotelsModel.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:tripfinder_app/CustomWidgets/HotelDetails.dart';
+import 'package:tripfinder_app/Ui/HotelDetails.dart';
 
 class NewWidgetOfLocations extends StatefulWidget {
   final Properties hotel;
@@ -20,6 +20,9 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
     String? imageUrl = (widget.hotel.images != null && widget.hotel.images!.isNotEmpty)
         ? widget.hotel.images![0].thumbnail
         : null;
+
+    bool isIconBlack = false;
+
 
     return GestureDetector(
       onTap: () {
@@ -51,12 +54,32 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                 color: Colors.grey[300], // لون بديل في حال عدم وجود صورة
                 child: Center(child: Text('No Image')),
               ),
-              Text(
-                widget.hotel.name ?? " ", // عرض اسم الفندق
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // لو الكلام كتير بتنزله سطر جديد
+                  Flexible(
+                    child: Text(
+                      widget.hotel.name ?? "",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const ImageIcon(
+                      AssetImage("assets/images/save.png"),
+                      size: 40,
+                    ),
+
+                    onPressed: () {
+                      setState(() {
+                        isIconBlack = !isIconBlack; // تغيير حالة اللون عند النقر
+                      });
+                    },
+                  ),
+                ],
               ),
               SizedBox(height: 3),
               Row(
@@ -64,7 +87,7 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                   // التحقق من وجود التقييم
                   Text(
                     "${widget.hotel.overallRating ?? 0.0}",
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.grey),
@@ -72,7 +95,7 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                   RatingBarIndicator(
                     rating: (widget.hotel.overallRating ?? 0.0)
                         .toDouble(), // تمرير التقييم المستلم من API أو 0.0 في حال كان فارغًا
-                    itemBuilder: (context, index) => Icon(
+                    itemBuilder: (context, index) => const Icon(
                       Icons.star,
                       color: Colors.amber,
                     ),
@@ -83,16 +106,15 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                 ],
               ),
               SizedBox(height: 3),
-              // عرض السعر إذا كان متاحًا
               Text(
-                "${widget.hotel.ratePerNight?.lowest?.toString() ?? '0'}",
-                style: TextStyle(
+                "${widget.hotel.ratePerNight?.lowest.toString() ?? '0'}",
+                style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[700]),
+                    color: Colors.green),
               ),
               SizedBox(height: 3),
-              Text(
+              const Text(
                 "/night",
                 style: TextStyle(color: Colors.grey),
               ),
