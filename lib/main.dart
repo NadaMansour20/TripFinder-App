@@ -1,10 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:tripfinder_app/GetStartedClass.dart';
+//import 'package:tripfinder_app/GetStartedClass.dart';
 import 'package:tripfinder_app/Login.dart';
 import 'package:tripfinder_app/Register.dart';
 
+import 'MainScreen.dart';
+import 'Ui/GetStartedClass.dart';
+import 'firebase_options.dart';
+import 'homaPage.dart';
 
-void main() {
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -19,6 +29,8 @@ class MyApp extends StatelessWidget {
         GetStartedClass.routName:(BuildContext)=>GetStartedClass(),
         Login.routName:(BuildContext)=>Login(),
         Register.routName:(BuildContext)=>Register(),
+        MainScreen.routName:(BuildContext)=>MainScreen(),
+        HomePage.routName:(BuildContext)=>HomePage(),
       },
 
     );
