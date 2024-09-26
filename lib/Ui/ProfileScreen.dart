@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';  // Import Firebase Auth
 
 class ProfileScreen extends StatelessWidget {
-  /*String? name = userlogin.displayName;  // you fetch the logged-in user’s name
-  String? email = userlogin.email;    // user email
-  String? password = userlogin.passwoed;// Fetch user’s pass
-*/
+  final User? currentUser = FirebaseAuth.instance.currentUser;  // Fetch current logged-in user
+
   @override
   Widget build(BuildContext context) {
+    String? name = currentUser?.displayName ?? "Trip Finder";  // Display user name
+    String? email = currentUser?.email ?? "example@gmail.com";  // Display user email
+    String password = '********';  // Hide password
+
     return Scaffold(
       backgroundColor: Colors.white,  // White background for the page
       body: SafeArea(
@@ -34,12 +37,11 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage(
-                         'images/Untitled.png'),  // Replace with your asset path
+                      backgroundImage: AssetImage('images/Untitled.png'),  // Replace with your asset path
                     ),
                     SizedBox(height: 16),
                     Text(
-                      "Trip Finder",  // after firebase $name
+                      name,  // User name
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -48,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "example@gmail.com",  // after firebase $email
+                      email,  // User email
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
@@ -63,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextFormField(
-                  initialValue: "TripFinder",
+                  initialValue: name,
                   decoration: InputDecoration(
                     labelText: 'Name',
                     filled: true,
@@ -81,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextFormField(
-                  initialValue: "example@gmail.com",
+                  initialValue: email,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     filled: true,
@@ -100,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextFormField(
                   obscureText: true,
-                  initialValue: '********',  // To hide password
+                  initialValue: password,  // To hide password
                   decoration: InputDecoration(
                     labelText: 'Password',
                     filled: true,
@@ -126,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();  // Close dialog
                             },
                             child: Text("OK"),
                           ),
@@ -148,4 +150,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
