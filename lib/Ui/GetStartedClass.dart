@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
-import 'Login.dart';
+import '../Login.dart';
 
 class GetStartedClass extends StatelessWidget {
 
