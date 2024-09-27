@@ -53,7 +53,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                     itemCount: imageUrls.length,
                     itemBuilder: (context, index) {
                       return Image.network(
-                        imageUrls[index]!,
+                        imageUrls[index]??"",
                         fit: BoxFit.cover,
                         width: MediaQuery.of(context).size.width,
                       );
@@ -93,7 +93,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${widget.hotel.overallRating}",
+                          "${widget.hotel.overallRating?? ""}",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                         Padding(
                           padding: const EdgeInsets.all(5),
                           child: RatingBarIndicator(
-                            rating: widget.hotel.overallRating!.toDouble(),
+                            rating: widget.hotel.overallRating?.toDouble()?? 0.0,
                             itemBuilder: (context, index) => const Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -115,7 +115,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                       ],
                     ),
                     SizedBox(height: 10,),
-                    Text(widget.hotel.description!,style: TextStyle(fontSize: 15),),
+                    Text(widget.hotel.description??" ",style: TextStyle(fontSize: 15),),
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -164,7 +164,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                             color: Colors.purple[200],
                           ),
                           SizedBox(width: 10),
-                          Text(amenities[i]!),
+                          Text(amenities[i]??" "),
                         ],
                       ),
                     SizedBox(height: 15),
@@ -178,7 +178,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          nearby_places[i].name!,
+                          nearby_places[i].name ??" ",
                         ),
                       ),
                     ],

@@ -6,9 +6,14 @@ import 'package:tripfinder_app/Ui/GetStartedClass.dart';
 import 'package:tripfinder_app/Login.dart';
 import 'package:tripfinder_app/MainScreen.dart';
 import 'package:tripfinder_app/Register.dart';
+import 'package:tripfinder_app/firebase_options.dart';
 
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -16,7 +21,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Firebase.initializeApp();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -28,7 +32,7 @@ class MyApp extends StatelessWidget {
         Login.routName:(BuildContext)=>Login(),
         Register.routName:(BuildContext)=>Register(),
         MainScreen.routName:(BuildContext)=>MainScreen(),
-        HotelDetails.routName: (context) => HotelDetails(ModalRoute.of(context)!.settings.arguments as Properties), // تمرير الفندق كمعامل
+        HotelDetails.routName: (context) => HotelDetails(ModalRoute.of(context)!.settings.arguments as Properties),
       },
 
     );
