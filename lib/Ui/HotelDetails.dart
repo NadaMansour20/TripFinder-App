@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:tripfinder_app/Api/HotelsModel.dart';
+import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
 import 'package:tripfinder_app/Ui/GoogleMap.dart';
 
@@ -28,8 +28,9 @@ class _HotelDetailsState extends State<HotelDetails> {
   @override
   Widget build(BuildContext context) {
     List<String?>? imageUrls = widget.hotel.images?.map((image) => image.thumbnail).toList();
-    final List<Ratings>? reviews = widget.hotel.ratings; // قائمة المراجعات
+    final List<Ratings>? reviews = widget.hotel.ratings; 
     List<String?>? amenities = widget.hotel.amenities?.toList();
+    List<NearbyPlaces>? nearby_places=widget.hotel.nearbyPlaces?.toList();
 
     double? latitude = widget.hotel.gpsCoordinates?.latitude?.toDouble();
     double? longitude = widget.hotel.gpsCoordinates?.longitude?.toDouble();
@@ -113,7 +114,9 @@ class _HotelDetailsState extends State<HotelDetails> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 3),
+                    SizedBox(height: 10,),
+                    Text(widget.hotel.description!,style: TextStyle(fontSize: 15),),
+                    SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -126,7 +129,6 @@ class _HotelDetailsState extends State<HotelDetails> {
                         ),
                         TextButton(
                           onPressed: () {
-                            // افتح حوار المراجعات
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -166,19 +168,35 @@ class _HotelDetailsState extends State<HotelDetails> {
                         ],
                       ),
                     SizedBox(height: 15),
+                    const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("nearby_places",style: TextStyle(fontWeight: FontWeight.bold),),
+                    ),
+                    for (int i = 0; i < nearby_places!.length; i++) ...[
+                      SizedBox(height: 10), // Add space between each place
+                      // Display the place name
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          nearby_places[i].name!,
+                        ),
+                      ),
+                    ],
 
+                    SizedBox(height:15),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.purple[200]),
                       onPressed: () {
                         GoogleMap.openMap(latitude!, longitude!);
                       },
-                      child: Text("GPS"),
+                      child: Text("GPS",style: TextStyle(color: Colors.white),),
                     ),
                     SizedBox(height: 3),
                     CustomButton(
                       onTap: () {
                         // add to cart
                       },
-                      buttonText: "addToCart",
+                      buttonText: "Book Now",
                     ),
                   ],
                 ),
@@ -201,12 +219,12 @@ class HotelReviewsDialog extends StatelessWidget {
     return AlertDialog(
       title: Text("Reviews"),
       content: Container(
-        width: double.maxFinite, // يجعل الحوار أعرض
+        width: double.maxFinite,
         child: ListView.builder(
           itemCount: reviews.length,
           itemBuilder: (context, index) {
             return ListTile(
-              title: Text(reviews[index].stars.toString() + " Stars"),
+              title: Text("${reviews[index].stars} Stars"),
               subtitle: Text("Count: ${reviews[index].count}"),
             );
           },
@@ -215,7 +233,7 @@ class HotelReviewsDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // إغلاق الحوار
+            Navigator.of(context).pop();
           },
           child: Text("Close"),
         ),

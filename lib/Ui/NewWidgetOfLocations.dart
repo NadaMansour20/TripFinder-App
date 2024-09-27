@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tripfinder_app/Api/HotelsModel.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:tripfinder_app/Ui/HotelDetails.dart';
 
 class NewWidgetOfLocations extends StatefulWidget {
@@ -68,7 +68,8 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                     ),
                   ),
                   IconButton(
-                    icon: const ImageIcon(
+                    icon: ImageIcon(
+
                       AssetImage("assets/images/save.png"),
                       size: 40,
                     ),
@@ -94,14 +95,14 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                   ),
                   RatingBarIndicator(
                     rating: (widget.hotel.overallRating ?? 0.0)
-                        .toDouble(), // تمرير التقييم المستلم من API أو 0.0 في حال كان فارغًا
+                        .toDouble(),
                     itemBuilder: (context, index) => const Icon(
                       Icons.star,
                       color: Colors.amber,
                     ),
-                    itemCount: 5, // عدد النجوم الإجمالي
-                    itemSize: 30.0, // حجم النجوم
-                    direction: Axis.horizontal, // اتجاه النجوم
+                    itemCount: 5,
+                    itemSize: 30.0,
+                    direction: Axis.horizontal,
                   ),
                 ],
               ),
