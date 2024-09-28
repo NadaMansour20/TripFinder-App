@@ -11,14 +11,13 @@ class ProfileScreen extends StatelessWidget {
     String password = '********';  // Hide password
 
     return Scaffold(
-      backgroundColor: Colors.white,  // White background for the page
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               // Header with gradient and user info
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -35,14 +34,14 @@ class ProfileScreen extends StatelessWidget {
                 padding: EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 50,
                       backgroundImage: AssetImage('images/Untitled.png'),  // Replace with your asset path
                     ),
                     SizedBox(height: 16),
                     Text(
                       name,  // User name
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -51,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(height: 8),
                     Text(
                       email,  // User email
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 16,
                       ),
@@ -73,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    prefixIcon: Icon(Icons.person, color: Colors.purpleAccent),
+                    prefixIcon: Icon(Icons.person,),
                   ),
                 ),
               ),
@@ -91,7 +90,7 @@ class ProfileScreen extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    prefixIcon: Icon(Icons.email, color: Colors.purpleAccent),
+                    prefixIcon: Icon(Icons.email,),
                   ),
                 ),
               ),
@@ -110,7 +109,7 @@ class ProfileScreen extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    prefixIcon: Icon(Icons.lock, color: Colors.purpleAccent),
+                    prefixIcon: Icon(Icons.lock,),
                   ),
                 ),
               ),

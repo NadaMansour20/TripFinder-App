@@ -102,7 +102,8 @@ class FlightTicket extends StatelessWidget {
                   Text(
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    fligthTicketModel.timedeparture!,//08:00 AM
+                    truncateText( fligthTicketModel.timedeparture!,10),
+                    //fligthTicketModel.timedeparture!,//08:00 AM
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -123,7 +124,8 @@ class FlightTicket extends StatelessWidget {
                   Text(
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    fligthTicketModel.timearrive!,//'02:30 PM'
+                    truncateText( fligthTicketModel.timearrive!,10),
+                    //fligthTicketModel.timearrive!,//'02:30 PM'
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -176,4 +178,7 @@ class FlightTicket extends StatelessWidget {
       ),
     );
   }
+}
+String truncateText(String text, int maxLength) {
+  return (text.length > maxLength) ? '${text.substring(0, maxLength)}...' : text;
 }

@@ -12,7 +12,7 @@ class NewServiceFlight
   NewServiceFlight(this.dio);
   Future <List<FligthTicketModel>>getTicket() async{
     var responce =await dio.get(
-"https://serpapi.com/search.json?engine=google_flights&departure_id=PEK&arrival_id=AUS&outbound_date=2024-09-27&return_date=2024-10-03&currency=USD&hl=en&api_key=8583831c20a1efc505c2d99555d5b72ffb1b5ba90f23c147f15eca51a9d64885"    );
+        "https://serpapi.com/search.json?engine=google_flights&departure_id=PEK&arrival_id=AUS&outbound_date=2024-09-30&return_date=2024-10-01&currency=USD&hl=en&api_key=8583831c20a1efc505c2d99555d5b72ffb1b5ba90f23c147f15eca51a9d64885"   );
     Map<String,dynamic> jsonData=responce.data;
     List<dynamic> flights=jsonData['other_flights'];
     //List<dynamic> flightsmin = jsonData['other_flights']['flights'];

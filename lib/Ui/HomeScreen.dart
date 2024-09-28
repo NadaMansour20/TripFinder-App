@@ -1,203 +1,117 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tripfinder_app/Api/ApiManager.dart';
-import 'package:tripfinder_app/Api/HotelDescription.dart';
-import 'package:tripfinder_app/Ui/NewWidgetOfLocations.dart';
-import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:tripfinder_app/CustomWidgets/flightticket_list.dart';
+import 'package:tripfinder_app/Ui/Hotels.dart';
+import 'package:tripfinder_app/services/Flight.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
 
-class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController searchController = TextEditingController();
-  DateTime? checkInDate;
-  DateTime? checkOutDate;
-  Future<HotelDescription>? futureHotels;
 
-  @override
-  void initState() {
-    super.initState();
-    // Load default hotels on screen load
-    futureHotels = ApiManager.getAllHotels();
-  }
+class HomeScreen extends StatelessWidget {
 
-  void searchHotels() {
-    String? searchQuery = searchController.text.trim();
-    String? checkIn = checkInDate != null ? DateFormat('yyyy-MM-dd').format(checkInDate!) : null;
-    String? checkOut = checkOutDate != null ? DateFormat('yyyy-MM-dd').format(checkOutDate!) : null;
-
-    // Call SearchHotels only if there are search parameters
-    if (searchQuery.isNotEmpty || checkIn != null || checkOut != null) {
-      setState(() {
-        futureHotels = ApiManager.SearchHotels(
-          checkIn ?? '2024-12-26', // Default check-in date
-          checkOut ?? '2024-12-30', // Default check-out date
-          searchQuery.isNotEmpty ? searchQuery : 'allhotels', // Default search query
-        );
-      });
-    } else {
-      // Call getAllHotels if no search parameters
-      setState(() {
-        futureHotels = ApiManager.getAllHotels();
-      });
-    }
-  }
-
+  const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Center(
-          child: Text(
-            "Explore",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          ),
-        ),
-        leading: Icon(Icons.arrow_back),
+        leading: IconButton(onPressed: (){}, icon: Padding(
+          padding: const EdgeInsets.only(left: 9.0),
+        )),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body:
+      Column(
         children: [
-          // Search Bar
+          Container(
+            height: 150,
+            width: 1000,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Explore the ',
+                    style:TextStyle(
+                      fontSize:35,
+                      fontWeight:FontWeight.w200,
+                    ),
+                  ),
+                  Row(
+                      children: [
+                        const Text('Beautiful',
+                          style:TextStyle(
+                            fontSize:35,
+                          ),
+                        ),
+                        Text('  World',
+                          style:TextStyle(
+                            fontSize: 35,
+                            color:  Colors.purple[300]!,
+                          ),
+                        )
+                      ]
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      image: const DecorationImage(image:AssetImage('assets/images/hotel.avif'),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(30),
+                    ),              height: 200,
+                    width: 200,
+                  ),
+                  TextButton(onPressed:(){
+
+                    Navigator.pushNamed(context,Hotels.routName);
+
+                  }, child: const Text('  Hotels',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),),
+                ],
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
+            padding: const EdgeInsets.all(30),
+            child:  Stack(
+              alignment: Alignment.center,
               children: [
-                Expanded(
-                  child: TextField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      hintText: "Search for hotels...",
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        borderSide: BorderSide(
-                          color: Colors.grey[200]!,
-                        ),
-                      ),
+                Container(
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(image:AssetImage('assets/images/flight.avif'),
+                      fit: BoxFit.cover,
                     ),
-                  ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),              height: 200,
+                  width: 200,
                 ),
-                SizedBox(width: 30),
-                Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: GestureDetector(
-                    onTap: () {
-                      searchHotels();
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.purple[200]!,
-                      child: const Icon(
-                        Icons.search,
-                        color: Colors.white,
-                      ),
-                    ),
+                TextButton(onPressed: (){
+
+                  Navigator.pushNamed(context,Flight.routName);
+                }, child: const Text('Flights',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    color: Colors.white,
                   ),
-                ),
+                ),),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Date selection
-              Padding(
-                padding: EdgeInsets.all(30),
-                child: GestureDetector(
-                  onTap: () async {
-                    // Show date picker for check-in date
-                    DateTime? pickedCheckInDate = await showDatePicker(
-                      context: context,
-                      initialDate: checkInDate ?? DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2101),
-                    );
-
-                    if (pickedCheckInDate != null) {
-                      setState(() {
-                        checkInDate = pickedCheckInDate;
-                      });
-                    }
-
-                    // Show date picker for check-out date
-                    DateTime? pickedCheckOutDate = await showDatePicker(
-                      context: context,
-                      initialDate: checkOutDate ?? checkInDate ?? DateTime.now(),
-                      firstDate: checkInDate ?? DateTime.now(),
-                      lastDate: DateTime(2101),
-                    );
-
-                    if (pickedCheckOutDate != null) {
-                      setState(() {
-                        checkOutDate = pickedCheckOutDate;
-                      });
-                    }
-                    searchHotels();
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Choose date",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "${checkInDate != null ? DateFormat('dd MMM yyyy').format(checkInDate!) : 'Select Check-in'} - ${checkOutDate != null ? DateFormat('dd MMM yyyy').format(checkOutDate!) : 'Select Check-out'}",
-                        style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // Hotel content
-          Expanded(
-            child: FutureBuilder<HotelDescription>(
-              future: futureHotels,
-              builder: (context, snapshot) {
-               // print("Response: ${snapshot.data?.toJson().toString()}");
-
-                if (snapshot.hasError) {
-                  //print("Response: ${snapshot.error.toString()}");
-                  return Center(child: Text(snapshot.error.toString()));
-                }
-                else if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                var hotelLocation = snapshot.data;
-
-                if (hotelLocation?.searchMetadata?.status == "Success") {
-                  return ListView.builder(
-                    itemCount: hotelLocation?.properties?.length ?? 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      var hotel = hotelLocation!.properties![index];
-                      return NewWidgetOfLocations(hotel);
-                    },
-                  );
-                } else {
-                  return Center(child: Text('No hotels found.'));
-                }
-              },
-            ),
-          ),
+          )
         ],
-      ),
+      )
+      ,
     );
   }
 }

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomTextField.dart';
+import 'package:tripfinder_app/MainScreen.dart';
 import 'package:tripfinder_app/Register.dart';
 
-import 'homaPage.dart';
 
 class Login extends StatefulWidget {
   static const String routName = "login";
@@ -97,7 +97,7 @@ class _LoginState extends State<Login> {
                           try {
                             await userlogin(); //
                             showSnackBar(context, 'Operation Success');
-                            Navigator.pushNamed(context, HomePage.routName);
+                            Navigator.pushNamed(context, MainScreen.routName);
                             // Navigator.pushNamed(context, Register.routName);
                           } on FirebaseAuthException catch (ex) {
                             if (ex.code == 'user-not-found') {

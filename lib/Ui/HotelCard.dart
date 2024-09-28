@@ -4,16 +4,16 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:tripfinder_app/Ui/HotelDetails.dart';
 
-class NewWidgetOfLocations extends StatefulWidget {
+class HotelCard extends StatefulWidget {
   final Properties hotel;
 
-  NewWidgetOfLocations(this.hotel);
+  HotelCard(this.hotel);
 
   @override
-  State<NewWidgetOfLocations> createState() => _NewWidgetOfLocationsState();
+  State<HotelCard> createState() => _HotelCardState();
 }
 
-class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
+class _HotelCardState extends State<HotelCard> {
   @override
   Widget build(BuildContext context) {
 
@@ -68,7 +68,7 @@ class _NewWidgetOfLocationsState extends State<NewWidgetOfLocations> {
                     ),
                   ),
                   IconButton(
-                    icon: ImageIcon(
+                    icon: const ImageIcon(
 
                       AssetImage("assets/images/save.png"),
                       size: 40,

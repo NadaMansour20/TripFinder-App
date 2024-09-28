@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
-import '../Login.dart';
+import 'package:tripfinder_app/Login.dart';
 
-class GetStartedClass extends StatelessWidget {
+class GetStartedPage extends StatefulWidget {
 
-  String welcomeImage = "assets/images/welcometotripfinder.jpg";
-  String textWelcome = "Ready to uncover your next adventure?";
-  String welcomeDescription = "Let TripFinder guide you to unforgettable destinations! ";
   static const String routName = "getStartedClass";
+
+  @override
+  State<GetStartedPage> createState() => _GetStartedPageState();
+}
+
+class _GetStartedPageState extends State<GetStartedPage> {
+  String welcomeImage = "assets/images/welcometotripfinder.jpg";
+
+  String textWelcome = "Ready to uncover your next adventure?";
+
+  String welcomeDescription = "Let TripFinder guide you to unforgettable destinations! ";
 
   @override
   Widget build(BuildContext context) {

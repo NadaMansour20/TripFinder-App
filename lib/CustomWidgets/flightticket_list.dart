@@ -14,10 +14,11 @@ class FlightTicketList extends StatefulWidget {
 class _FlightTicketListState extends State<FlightTicketList> {
   List<FligthTicketModel> tickets=[];
   bool isloading= true;
+
   void initState() {
     super.initState();
-     getTickets();
-    
+    getTickets();
+
   }
 
   Future<void> getTickets() async {
@@ -30,17 +31,18 @@ class _FlightTicketListState extends State<FlightTicketList> {
   @override
   Widget build(BuildContext context) {
     return isloading ? Center(child: CircularProgressIndicator()): ListView.builder(
-      itemCount: tickets.length,
-      itemBuilder: (context,index){
-        return  Padding(
-          padding: const EdgeInsets.only(bottom: 22),
-          child: Padding(
-            padding: const EdgeInsets.all(9.0),
-            child: FlightTicket(fligthTicketModel: tickets[index],),
-          ),
+        itemCount: tickets.length,
+        itemBuilder: (context,index){
+          return
+            Padding(
+              padding: const EdgeInsets.only(bottom: 22),
+              child: Padding(
+                padding: const EdgeInsets.all(9.0),
+                child: FlightTicket(fligthTicketModel: tickets[index],),
+              ),
 
-        );
-      });
+            );
+        });
 
 
 
