@@ -97,7 +97,7 @@ class _LoginState extends State<Login> {
                           try {
                             await userlogin(); //
                             showSnackBar(context, 'Operation Success');
-                            Navigator.pushNamed(context, MainScreen.routName);
+                            Navigator.pushReplacementNamed(context, MainScreen.routName);
                           } on FirebaseAuthException catch (ex) {
                             if (ex.code == 'user-not-found') {
                               showSnackBar(context, 'user not found');

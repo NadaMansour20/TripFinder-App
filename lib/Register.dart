@@ -107,7 +107,7 @@ class _RegisterState extends State<Register> {
                         try {
                           await userRegister(); //
                           showSnackBar(context, 'Operation Success');
-                          Navigator.pushNamed(context, Login.routName);
+                          Navigator.pushReplacementNamed(context, Login.routName);
                           // Navigator.pushNamed(context, Register.routName);
                         } on FirebaseAuthException catch (ex) {
                           if (ex.code == 'weak-password') {
