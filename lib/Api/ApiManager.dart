@@ -12,7 +12,7 @@ class ApiManager{
 
   static Future<HotelDescription>getAllHotels() async {
     var uri=Uri.https(BaseURL,'search.json',{
-      'api_key':"4d3d903799a4c366e7e2135242ea69dab8c4cec1112efdd0c5c7facbb288d58f",
+      'api_key':"8583831c20a1efc505c2d99555d5b72ffb1b5ba90f23c147f15eca51a9d64885",
       'q':'allhotels', // all hotels
       'engine':'google_hotels',
       'check_in_date':'2024-12-26',
@@ -27,7 +27,7 @@ class ApiManager{
   static Future<HotelDescription>SearchHotels(String checkIn,String checkOut,String Country) async {
 
     var uri=Uri.https(BaseURL,'search.json',{
-      'api_key':"4d3d903799a4c366e7e2135242ea69dab8c4cec1112efdd0c5c7facbb288d58f",
+      'api_key':"8583831c20a1efc505c2d99555d5b72ffb1b5ba90f23c147f15eca51a9d64885",
       'q':Country,
       'engine':'google_hotels',
       'check_in_date':checkIn,

@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
@@ -21,7 +20,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   String? email; //
   String? pass; //
-  GlobalKey<FormState> formkey = GlobalKey();
+  GlobalKey<FormState> formkey1 = GlobalKey<FormState>();
   bool isLoading=false;
   bool _isPasswordObscure = true;
   bool _isConfirmPasswordObscure = true;
@@ -33,14 +32,12 @@ class _RegisterState extends State<Register> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Form(
-          key: formkey,
+          key: formkey1,
           child: SingleChildScrollView(
             // Wrap with SingleChildScrollView
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset("assets/images/register_logo.jpg"),
                   const SizedBox(height: 20),
@@ -101,7 +98,7 @@ class _RegisterState extends State<Register> {
                   const SizedBox(height: 15),
                   CustomButton(
                     onTap: () async {
-                      if(formkey.currentState!.validate()){
+                      if(formkey1.currentState!.validate()){
                         isLoading=true;
                         setState(() {
 

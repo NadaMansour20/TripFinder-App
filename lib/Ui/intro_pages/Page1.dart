@@ -16,7 +16,8 @@ class _page1State extends State<page1> {
               padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
               child: Expanded(
                   flex: 2,
-                  child: Image.asset('assets/images/page1.jpeg',)),
+                  child: Image.asset('assets/images/page1.jpeg',width: 300,height: 300,)
+              ),
             ),
             const Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 20),

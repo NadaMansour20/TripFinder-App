@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   bool _isPasswordObscure = true;
   String? email; //
   String? pass; //
-  GlobalKey<FormState> formkey = GlobalKey();
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
   bool isLoading=false;
 
   @override
@@ -34,14 +34,14 @@ class _LoginState extends State<Login> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-
                 child: Column(
                   children: [
+                    Image.asset("assets/images/register_logo.jpg"),
                     Container(
-                      margin:const EdgeInsets.symmetric(vertical: 70),
+                      margin:const EdgeInsets.symmetric(vertical: 20),
                       child: const Row(
                         children: [
-                          Text("Welcome Back",style: TextStyle(
+                          Text("Welcome Back!",style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
                             color:Color(0xFFBA68C8), // لون بنفسجي فاتح
@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
                       child: Row(
                         children: [
                           Text(
-                            'Sign In!',
+                            'Sign In',
                             style: TextStyle(
                               fontSize: 27,
                               fontWeight: FontWeight.bold,
@@ -98,7 +98,6 @@ class _LoginState extends State<Login> {
                             await userlogin(); //
                             showSnackBar(context, 'Operation Success');
                             Navigator.pushNamed(context, MainScreen.routName);
-                            // Navigator.pushNamed(context, Register.routName);
                           } on FirebaseAuthException catch (ex) {
                             if (ex.code == 'user-not-found') {
                               showSnackBar(context, 'user not found');
@@ -124,7 +123,6 @@ class _LoginState extends State<Login> {
                           'don\'t have an account ?',
                           style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
                               color: Colors.black),
                         ),
                         TextButton(onPressed: (){
@@ -132,7 +130,7 @@ class _LoginState extends State<Login> {
 
                         },
                           child: const Text(" REGISTER",style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color:Color(0xFFBA68C8))),
                         ),

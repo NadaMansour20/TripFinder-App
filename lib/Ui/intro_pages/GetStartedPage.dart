@@ -45,7 +45,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
             ),
             CustomButton(
               onTap: () {
-                Navigator.pushNamed(context, Login.routName);
+                Navigator.pushReplacementNamed(context, Login.routName);
               },
               buttonText: "Get Started",
             ),

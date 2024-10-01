@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:tripfinder_app/Login.dart';
 import 'package:tripfinder_app/MainScreen.dart';
 import 'package:tripfinder_app/Ui/intro_pages/GetStartedPage.dart';
 import 'package:tripfinder_app/Ui/intro_pages/Page1.dart';
@@ -35,7 +34,7 @@ class _onBoardingState extends State<onBoarding> {
       appBar: AppBar(
         actions: [
           TextButton(onPressed: (){
-            Navigator.pushNamed(context, GetStartedPage.routName);
+            Navigator.pushReplacementNamed(context, GetStartedPage.routName);
           },
               child:
               const Text('Skip',

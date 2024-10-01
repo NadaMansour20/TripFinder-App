@@ -30,14 +30,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // initialRoute: GetStartedClass.routName,
-      initialRoute:Welcomepage.routName,
+     // initialRoute:Welcomepage.routName,
+      home: Welcomepage(),
 
       routes: {
         GetStartedPage.routName:(BuildContext)=>GetStartedPage(),
         onBoarding.routName:(BuildContext)=>onBoarding(),
         Hotels.routName:(BuildContext)=>Hotels(),
-        Login.routName:(BuildContext)=>Login(),
-        Register.routName:(BuildContext)=>Register(),
+         Login.routName:(BuildContext)=>Login(),
+         Register.routName:(BuildContext)=>Register(),
         MainScreen.routName:(BuildContext)=>MainScreen(),
         HotelDetails.routName: (context) => HotelDetails(ModalRoute.of(context)!.settings.arguments as Properties),
         Flight.routName:(BuildContext)=>Flight(),
