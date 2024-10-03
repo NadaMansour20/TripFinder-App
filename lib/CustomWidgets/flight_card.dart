@@ -76,7 +76,7 @@ class FlightTicket extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     truncateText(fligthTicketModel.namearrivelong! , 10),
-                   // fligthTicketModel.namearrivelong!, //San Francisco
+                    // fligthTicketModel.namearrivelong!, //San Francisco
                     style: TextStyle(color: Colors.grey,fontSize: 14),
                   ),
                 ],
@@ -105,7 +105,7 @@ class FlightTicket extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     truncateText(fligthTicketModel.timedeparture! , 10),
-                   // fligthTicketModel.timedeparture!,//08:00 AM
+                    // fligthTicketModel.timedeparture!,//08:00 AM
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -127,7 +127,7 @@ class FlightTicket extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     truncateText(fligthTicketModel.timearrive! , 10),
-                  //  fligthTicketModel.timearrive!,//'02:30 PM'
+                    //  fligthTicketModel.timearrive!,//'02:30 PM'
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
@@ -171,9 +171,9 @@ class FlightTicket extends StatelessWidget {
               Text(
                 "\$${fligthTicketModel.price.toString()}", //\$260
                 style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black
                 ),
               ),
             ],

@@ -55,6 +55,10 @@ class _MainScreenState extends State<MainScreen> {
               icon: ImageIcon(AssetImage("assets/images/profile.jpg")),
               label: "Profile",
             ),
+            BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage("assets/images/profile.jpg")),
+              label: "Book",
+            ),
           ],
           selectedIconTheme: const IconThemeData(
             color: Colors.white
