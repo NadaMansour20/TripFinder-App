@@ -47,6 +47,7 @@ class NewServiceFlight {
           timedeparture: flightMini["departure_airport"]["time"]?? 'Unknown',
           namearrive: flightMini["arrival_airport"]["id"]?? 'Unknown',
           timearrive: flightMini["arrival_airport"]["time"]?? 'Unknown',
+          duration: flightMini["duration"]
         );
 
         flightLists.add(fligthTicketModel);
@@ -82,6 +83,9 @@ class NewServiceFlight {
           timedeparture: flightMini["departure_airport"]["time"]?? 'Unknown',
           namearrive: flightMini["arrival_airport"]["id"]?? 'Unknown',
           timearrive: flightMini["arrival_airport"]["time"]?? 'Unknown',
+            duration: flightMini["duration"],
+          airportModel: AirportModel.fromJson(response.data)
+
         );
 
         flightLists.add(fligthTicketModel);

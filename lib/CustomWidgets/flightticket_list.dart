@@ -38,21 +38,32 @@ class _FlightTicketListState extends State<FlightTicketList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: tickets.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 22),
-            child: Padding(
-              padding: const EdgeInsets.all(9.0),
-              child: FlightTicket(fligthTicketModel: tickets[index]),
-            ),
-          );
-        },
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Center(
+          child: Text(
+            "Tickets available",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
+          ),
+        ),
+      ),
+      body: Container(
+        color: Colors.white,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+          itemCount: tickets.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 22),
+              child: Padding(
+                padding: const EdgeInsets.all(9.0),
+                child: FlightTicket(fligthTicketModel: tickets[index]),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
