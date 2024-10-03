@@ -1,78 +1,93 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart'; // لإضافة دعم التنسيق
 
 import '../models/flight_ticket.dart';
 
-class NewServiceFlight
-{
- // var j=0;
-  //var k=0;
+class NewServiceFlight {
   final Dio dio;
-  NewServiceFlight(this.dio);
-  Future <List<FligthTicketModel>>getTicket() async{
-    var responce =await dio.get(
-        "https://serpapi.com/search.json?engine=google_flights&departure_id=PEK&arrival_id=AUS&outbound_date=2024-09-30&return_date=2024-10-01&currency=USD&hl=en&api_key=8583831c20a1efc505c2d99555d5b72ffb1b5ba90f23c147f15eca51a9d64885"   );
-    Map<String,dynamic> jsonData=responce.data;
-    List<dynamic> flights=jsonData['other_flights'];
-    //List<dynamic> flightsmin = jsonData['other_flights']['flights'];
-    //List<dynamic> miniflights=jsonData["other_flights"][j]["flights"];//
-    List<FligthTicketModel> flightlists=[];
-    for (var flight in flights){
-      List<dynamic> flightsmin = flight['flights'];
-      for (var flightmini in flightsmin){
-          FligthTicketModel fligthTicketModel=FligthTicketModel(
 
-                 price:flight["price"],
-                 namedeparture: flightmini["departure_airport"]["id"],
-                 //namedeparturelong: flightmini["departure_airport"]["name"],
-                 timedeparture:flightmini["departure_airport"]["time"] ,
-          namearrive: flightmini["arrival_airport"]["id"],
-          //namearrivelong: flightmini["arrival_airport"]["name"],
-           timearrive:flightmini["arrival_airport"]["time"],
-
-          );
-
-         flightlists.add(fligthTicketModel);
-          //k++;
-        }
-      //k=0;
-         //k++;
-
-
-    }
-      //j++;
-      //miniflights=jsonData["other_flights"][j]["flights"];//
-     // k=0;
-      //flights=jsonData["other_flights"][k];
-    return flightlists;
+  // دالة للحصول على التاريخ الحالي في التنسيق المناسب
+  static String getDefaultDate() {
+    var now = DateTime.now();
+    var formatter = DateFormat('yyyy-MM-dd'); // تنسيق التاريخ
+    return formatter.format(now);
   }
 
-      }
-//  for(var flight in flights){
-//      for(var miniflight in flights[flights] ){
-// namedeparture: miniflight["departure_airport"]["id"],
-// namedeparturelong: miniflight["departure_airport"]["name"],
-// timedeparture:miniflight["departure_airport"]["time"] ,
-// namearrive: miniflight["arrival_airport"]["id"],
-// namearrivelong: miniflight["arrival_airport"]["name"],
-// timearrive:miniflight["arrival_airport"]["time"],time
-//  flightlists.add(fligthTicketModel);
-//
-//
-//     }
-//     return flightlists;
-//   }
+  // دالة للحصول على تاريخ اليوم مع إضافة عدد من الأيام
+  static String getDatePlusDays(int days) {
+    var futureDate = DateTime.now().add(Duration(days: days)); // إضافة 10 أيام
+    var formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(futureDate);
+  }
 
-// FligthTicketModel fligthTicketModel=FligthTicketModel(
-//   namedeparture: flight["flights"][0]["departure_airport"]["id"],
-//   namedeparturelong: flight["flights"][0]["departure_airport"]["name"],
-//   timedeparture:flight["flights"][0]["departure_airport"]["time"] ,
-//   namearrive: flight["flights"][0]["arrival_airport"]["id"],
-//   namearrivelong: flight["flights"][0]["arrival_airport"]["name"],
-//   timearrive: flight["flights"][0]["arrival_airport"]["time"],);
-//
-//
-// flightlists.add(fligthTicketModel);
-//
-//
+  NewServiceFlight(this.dio);
+
+  Future<List<FligthTicketModel>> getTicket() async {
+    String today = getDefaultDate();
+    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+
+
+    var response = await dio.get(
+      "https://serpapi.com/search.json?engine=google_flights&departure_id=PEK&arrival_id=AUS&outbound_date=$today&return_date=$futureDate&currency=USD&hl=en&api_key=f8227b37913e86e58e0ed9f2c592542c26eced56d2ae9c9d211c3ca542e580d2",
+    );
+
+    Map<String, dynamic> jsonData = response.data;
+    List<dynamic> flights = jsonData['other_flights'];
+    List<FligthTicketModel> flightLists = [];
+
+    for (var flight in flights) {
+      List<dynamic> flightsMin = flight['flights'];
+      for (var flightMini in flightsMin) {
+        FligthTicketModel fligthTicketModel = FligthTicketModel(
+          price: flight["price"],
+          namedeparture: flightMini["departure_airport"]["id"]?? 'Unknown',
+          namedeparturelong: flightMini["departure_airport"]["name"]?? 'Unknown',
+          namearrivelong: flightMini["arrival_airport"]["name"]?? 'Unknown',
+          timedeparture: flightMini["departure_airport"]["time"]?? 'Unknown',
+          namearrive: flightMini["arrival_airport"]["id"]?? 'Unknown',
+          timearrive: flightMini["arrival_airport"]["time"]?? 'Unknown',
+        );
+
+        flightLists.add(fligthTicketModel);
+      }
+    }
+
+    return flightLists;
+  }
+  //required String from,required String to
+
+  Future<List<FligthTicketModel>> getspecialTicket({required String departureid,
+    required String arrivalidid}) async {
+    String today = getDefaultDate();
+    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+
+
+    var response = await dio.get(
+      "https://serpapi.com/search.json?engine=google_flights&departure_id=$departureid&arrival_id=$arrivalidid&outbound_date=$today&return_date=$futureDate&currency=USD&hl=en&api_key=f8227b37913e86e58e0ed9f2c592542c26eced56d2ae9c9d211c3ca542e580d2",
+    );
+
+    Map<String, dynamic> jsonData = response.data;
+    List<dynamic> flights = jsonData['other_flights'];
+    List<FligthTicketModel> flightLists = [];
+
+    for (var flight in flights) {
+      List<dynamic> flightsMin = flight['flights'];
+      for (var flightMini in flightsMin) {
+        FligthTicketModel fligthTicketModel = FligthTicketModel(
+          price: flight["price"],
+          namedeparture: flightMini["departure_airport"]["id"]?? 'Unknown',
+          namedeparturelong: flightMini["departure_airport"]["name"]?? 'Unknown',
+          namearrivelong: flightMini["arrival_airport"]["name"]?? 'Unknown',
+          timedeparture: flightMini["departure_airport"]["time"]?? 'Unknown',
+          namearrive: flightMini["arrival_airport"]["id"]?? 'Unknown',
+          timearrive: flightMini["arrival_airport"]["time"]?? 'Unknown',
+        );
+
+        flightLists.add(fligthTicketModel);
+      }
+    }
+
+    return flightLists;
+  }
+}

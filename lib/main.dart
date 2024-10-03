@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:tripfinder_app/Ui/HotelDetails.dart';
 import 'package:tripfinder_app/Login.dart';
