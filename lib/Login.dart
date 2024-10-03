@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -21,6 +22,21 @@ class _LoginState extends State<Login> {
   String? pass; //
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   bool isLoading=false;
+
+
+  CollectionReference userLoginData = FirebaseFirestore.instance.collection('userLoginData');
+  Future<void> addUserLoginData() {
+    // Call the user's CollectionReference to add a new user
+    return userLoginData
+        .add({
+      "email":email,
+      "pass":pass
+
+
+    })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +130,8 @@ class _LoginState extends State<Login> {
                           });
                         }
                         else{}
+                        addUserLoginData();
+
                       },
                       buttonText: "Sign In",
                     ),
