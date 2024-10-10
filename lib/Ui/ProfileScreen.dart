@@ -1,149 +1,120 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';  // Import Firebase Auth
+import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ProfileScreen extends StatelessWidget {
-  final User? currentUser = FirebaseAuth.instance.currentUser;  // Fetch current logged-in user
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  bool _isEditing = false;
+  User? _user;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    _user = _auth.currentUser;
+    if (_user != null) {
+      // Load user name from Firestore
+     // var userData = await _firestore.collection('users').doc(_user!.uid).get();
+     //  setState(() {
+     //    _nameController.text = userData['name'];
+     //    _emailController.text = _user!.email!;
+     //  });
+    }
+  }
+
+  void _toggleEditMode() {
+    setState(() {
+      _isEditing = !_isEditing;
+    });
+  }
+
+  Future<void> _saveChanges() async {
+    try {
+      if (_user != null) {
+        // Update Firebase Authentication email
+        await _user!.updateEmail(_emailController.text);
+
+        // Update Firebase Authentication password
+        if (_passwordController.text.isNotEmpty) {
+          await _user!.updatePassword(_passwordController.text);
+        }
+
+        // Update Firestore with new name
+      /*  await _firestore.collection('users').doc(_user!.uid).update({
+          'name': _nameController.text,
+        });*/
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile updated successfully')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: $e')),
+      );
+    }
+
+    setState(() {
+      _isEditing = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    String? name = currentUser?.displayName ?? "Trip Finder";  // Display user name
-    String? email = currentUser?.email ?? "example@gmail.com";  // Display user email
-    String password = '********';  // Hide password
-
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Header with gradient and user info
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFA40CB7),  // Light Blue
-                      Color(0xFFD26EE3),  // Purple
-                    ],
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(30),
-                  ),
-                ),
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: AssetImage('images/Untitled.png'),  // Replace with your asset path
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      name,  // User name
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      email,  // User email
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Editable name field
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextFormField(
-                  initialValue: name,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    prefixIcon: Icon(Icons.person,),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Editable email field
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextFormField(
-                  initialValue: email,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    prefixIcon: Icon(Icons.email,),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Editable password field
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextFormField(
-                  obscureText: true,
-                  initialValue: password,  // To hide password
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    prefixIcon: Icon(Icons.lock,),
-                  ),
-                ),
-              ),
-              SizedBox(height: 40),
-
-              // Save button
+      appBar: AppBar(
+        title: Text('Profile'),
+        actions: [
+          _isEditing
+              ? IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _saveChanges,
+          )
+              : IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: _toggleEditMode,
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+              enabled: _isEditing,
+            ),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+              enabled: _isEditing,
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'New Password'),
+              enabled: _isEditing,
+              obscureText: true,
+            ),
+            if (_isEditing)
               ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Success"),
-                        content: Text("Changes saved successfully!"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();  // Close dialog
-                            },
-                            child: Text("OK"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.purple,
-                  backgroundColor: Colors.white,
-                ),
+                onPressed: _saveChanges,
                 child: Text('Save Changes'),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
