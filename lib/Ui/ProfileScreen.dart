@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -9,112 +8,225 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? user;
+  String? name;
+  String? email;
+  String? password;
 
-  bool _isEditing = false;
-  User? _user;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-  }
+    user = _auth.currentUser;
 
-  Future<void> _loadUserData() async {
-    _user = _auth.currentUser;
-    if (_user != null) {
-      // Load user name from Firestore
-     // var userData = await _firestore.collection('users').doc(_user!.uid).get();
-     //  setState(() {
-     //    _nameController.text = userData['name'];
-     //    _emailController.text = _user!.email!;
-     //  });
+    // Populate fields with user data
+    if (user != null) {
+      name = user!.displayName ?? "TripFinder";
+      email = user!.email ?? "example@gmail.com";
+      nameController.text = name!;
+      emailController.text = email!;
     }
   }
 
-  void _toggleEditMode() {
-    setState(() {
-      _isEditing = !_isEditing;
-    });
-  }
-
-  Future<void> _saveChanges() async {
+  Future<void> _updateUserInfo() async {
     try {
-      if (_user != null) {
-        // Update Firebase Authentication email
-        await _user!.updateEmail(_emailController.text);
-
-        // Update Firebase Authentication password
-        if (_passwordController.text.isNotEmpty) {
-          await _user!.updatePassword(_passwordController.text);
-        }
-
-        // Update Firestore with new name
-      /*  await _firestore.collection('users').doc(_user!.uid).update({
-          'name': _nameController.text,
-        });*/
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully')),
-        );
+      // Update the display name if changed
+      if (nameController.text != name) {
+        await user!.updateDisplayName(nameController.text);
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile: $e')),
-      );
-    }
 
-    setState(() {
-      _isEditing = false;
-    });
+      // Update email if changed
+      if (emailController.text != email) {
+        await user!.updateEmail(emailController.text);
+      }
+
+      // Update password if entered
+      if (passwordController.text.isNotEmpty) {
+        await user!.updatePassword(passwordController.text);
+      }
+
+      await user!.reload(); // Reload user to get updated info
+
+      setState(() {
+        user = _auth.currentUser; // Update user instance
+        name = user!.displayName;
+        email = user!.email;
+      });
+
+      // Show success message
+      _showSuccessDialog();
+    } catch (e) {
+      // Handle error, such as re-authentication or other issues
+      print(e.toString());
+      _showErrorDialog(e);
+    }
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Success"),
+          content: Text("Changes saved successfully!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(dynamic error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text("Failed to save changes: $error"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile'),
-        actions: [
-          _isEditing
-              ? IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _saveChanges,
-          )
-              : IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: _toggleEditMode,
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-              enabled: _isEditing,
-            ),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-              enabled: _isEditing,
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'New Password'),
-              enabled: _isEditing,
-              obscureText: true,
-            ),
-            if (_isEditing)
+      backgroundColor: Colors.white, // White background for the page
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header with gradient and user info
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFA40CB7), // Light Blue
+                      Color(0xFFD26EE3), // Purple
+                    ],
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage(
+                          'images/Untitled.png'), // Replace with your asset path
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      name ?? "Trip Finder", // Use Firebase $name
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      email ?? "example@gmail.com", // Use Firebase $email
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // Editable name field
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    prefixIcon: Icon(Icons.person, color: Colors.purpleAccent),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // Editable email field
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    prefixIcon: Icon(Icons.email, color: Colors.purpleAccent),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // Editable password field
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: true, // Hide password
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    prefixIcon: Icon(Icons.lock, color: Colors.purpleAccent),
+                  ),
+                ),
+              ),
+              SizedBox(height: 40),
+
+              // Save button
               ElevatedButton(
-                onPressed: _saveChanges,
+                onPressed: () {
+                  _updateUserInfo(); // Save changes to Firebase
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.purple,
+                  backgroundColor: Colors.white,
+                ),
                 child: Text('Save Changes'),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );

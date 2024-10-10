@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth for lo
 import 'package:tripfinder_app/Ui/HomeScreen.dart';
 import 'package:tripfinder_app/Ui/ProfileScreen.dart';
 import 'package:tripfinder_app/Ui/SaveScreen.dart';
-//import 'package:tripfinder_app/Ui/Login.dart';
-// Import your login screen
+import 'package:tripfinder_app/Ui/LogoutScreen.dart'; // Import the Logout Screen
 
+import '../Login.dart';
 class MainScreen extends StatefulWidget {
   static const String routName = "mainScreen";
 
@@ -36,13 +36,13 @@ class _MainScreenState extends State<MainScreen> {
         child: BottomNavigationBar(
           backgroundColor: Colors.transparent,
           currentIndex: selectedIndex,
-          onTap: (index) async {
+          onTap: (index) {
             if (index == 3) { // Index for the Logout button
-              // Logout functionality
-              await FirebaseAuth.instance.signOut(); // Sign out the user
-
-              // Navigate to the login screen
-             // Navigator.pushReplacementNamed(context, login.routName);
+              // Navigate to the Logout screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LogoutScreen()),
+              );
             } else {
               setState(() {
                 selectedIndex = index;
@@ -63,14 +63,14 @@ class _MainScreenState extends State<MainScreen> {
               label: "Profile",
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage("assets/images/profile.jpg")),
+              icon: Icon(Icons.logout),
               label: "Logout",
             ),
           ],
-          selectedIconTheme: const IconThemeData(color: Colors.white),
-          unselectedIconTheme: const IconThemeData(color: Colors.white70),
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
+          selectedIconTheme: const IconThemeData(color: Colors.purple), // Purple icons
+          unselectedIconTheme: const IconThemeData(color: Colors.white), // White icons
+          selectedItemColor: Colors.white, // White labels when selected
+          unselectedItemColor: Colors.white70, // Slightly faded white when unselected
         ),
       ),
       body: ListOfTabs[selectedIndex],
