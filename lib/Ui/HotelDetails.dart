@@ -28,7 +28,7 @@ class _HotelDetailsState extends State<HotelDetails> {
   @override
   Widget build(BuildContext context) {
     List<String?>? imageUrls = widget.hotel.images?.map((image) => image.thumbnail).toList();
-    final List<Ratings>? reviews = widget.hotel.ratings; 
+    final List<Ratings>? reviews = widget.hotel.ratings;
     List<String?>? amenities = widget.hotel.amenities?.toList();
     List<NearbyPlaces>? nearby_places=widget.hotel.nearbyPlaces?.toList();
 
@@ -184,13 +184,9 @@ class _HotelDetailsState extends State<HotelDetails> {
                     ],
 
                     SizedBox(height:15),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.purple[200]),
-                      onPressed: () {
-                        GoogleMap.openMap(latitude!, longitude!);
-                      },
-                      child: Text("GPS",style: TextStyle(color: Colors.white),),
-                    ),
+                    if (latitude != null && longitude != null)
+                      LocationButton(latitude: latitude, longitude: longitude),
+
                     SizedBox(height: 3),
                     CustomButton(
                       onTap: () {
