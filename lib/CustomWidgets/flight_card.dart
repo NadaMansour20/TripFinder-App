@@ -14,100 +14,100 @@ class FlightTicket extends StatelessWidget {
     return Column(
       children: [
         Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align the cards with space in between
-            children: [
-              // First card
-              Expanded(
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15.0),
-                        ),
-                        child: Image.network(
-                          fligthTicketModel.airportModel!.imageCountrydeparture!, // Replace with your asset image path
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: double.infinity,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              fligthTicketModel.airportModel!.nameCountrydeparture!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'City name= ${fligthTicketModel.airportModel!.namecitydeparture}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align the cards with space in between
+      children: [
+    // First card
+    Expanded(
+    child: Card(
+    elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(15.0),
+            ),
+            child: Image.network(
+             fligthTicketModel.airportModel!.imageCountrydeparture!, // Replace with your asset image path
+              fit: BoxFit.cover,
+              height: 150,
+              width: double.infinity,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  fligthTicketModel.airportModel!.nameCountrydeparture!,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              SizedBox(width: 16), // Spacing between the two cards
+                SizedBox(height: 8),
+                Text(
+                  'City name= ${fligthTicketModel.airportModel!.namecitydeparture}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+    ),
+    SizedBox(width: 16), // Spacing between the two cards
 
-              // Second card
-              Expanded(
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15.0),
-                        ),
-                        child: Image.network(
-                          fligthTicketModel.airportModel!.imageCountryarrive!, // Replace with your asset image path
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: double.infinity,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              fligthTicketModel.airportModel!.nameCountryarrive!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'City name= ${fligthTicketModel.airportModel!.namecityarrive!}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),]
+    // Second card
+    Expanded(
+    child: Card(
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(15.0),
+    ),
+    child: Column(
+    mainAxisSize: MainAxisSize.min,
+    children: <Widget>[
+    ClipRRect(
+    borderRadius: BorderRadius.vertical(
+    top: Radius.circular(15.0),
+    ),
+    child: Image.network(
+      fligthTicketModel.airportModel!.imageCountryarrive!, // Replace with your asset image path
+    fit: BoxFit.cover,
+    height: 150,
+    width: double.infinity,
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    Text(
+    fligthTicketModel.airportModel!.nameCountryarrive!,
+    style: TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    ),
+    ),
+    SizedBox(height: 8),
+    Text(
+    'City name= ${fligthTicketModel.airportModel!.namecityarrive!}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
+    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+    ),
+    ],
+    ),
+    ),
+    ],
+    ),
+    ),
+    ),]
         ),
 
         Container(
