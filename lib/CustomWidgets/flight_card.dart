@@ -1,55 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import '../models/flight_ticket.dart';
+import 'CustomButton.dart';
 
-class FlightTicket extends StatefulWidget {
 
-
+class FlightTicket extends StatelessWidget {
   FlightTicket({super.key, required this.fligthTicketModel});
   final FligthTicketModel fligthTicketModel;
-
-  @override
-  State<FlightTicket> createState() => _FlightTicketState();
-}
-
-class _FlightTicketState extends State<FlightTicket> {
-  Future<void> saveFlightTicket() async {
-    // Get the current user ID
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
-
-      final flightData = {
-        'departure': widget.fligthTicketModel.namedeparture,
-        'arrival': widget.fligthTicketModel.namearrive,
-        'duration': widget.fligthTicketModel.duration,
-        'price': widget.fligthTicketModel.price,
-        'departureTime': widget.fligthTicketModel.timedeparture,
-        'arrivalTime': widget.fligthTicketModel.timearrive,
-        'departureCity': widget.fligthTicketModel.airportModel!.namecitydeparture,
-        'arrivalCity': widget.fligthTicketModel.airportModel!.namecityarrive,
-      };
-
-      try {
-        await userDoc.collection('flights').add(flightData); // Save flight data under the user's flight collection
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Flight ticket saved successfully!")),
-        );
-
-      } catch (e) {
-        print(e);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to save flight ticket")),
-        );
-
-      }
-    } else {
-      print("No user is signed in");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,107 +15,111 @@ class _FlightTicketState extends State<FlightTicket> {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // First card
-              Expanded(
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15.0),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align the cards with space in between
+              children: [
+                // First card
+                Expanded(
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(15.0),
+                          ),
+                          child: Image.network(
+                            fligthTicketModel.airportModel!.imageCountrydeparture!, // Replace with your asset image path
+                            fit: BoxFit.cover,
+                            height: 150,
+                            width: double.infinity,
+                          ),
                         ),
-                        child: Image.network(
-                          widget.fligthTicketModel.airportModel!.imageCountrydeparture!,
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: double.infinity,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.fligthTicketModel.airportModel!.nameCountrydeparture!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                fligthTicketModel.airportModel!.nameCountrydeparture!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'City name= ${widget.fligthTicketModel.airportModel!.namecitydeparture}.\nduration= ${(widget.fligthTicketModel.duration).toString()} minutes.',
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                            ),
-                          ],
+                              SizedBox(height: 8),
+                              Text(
+                                'City name= ${fligthTicketModel.airportModel!.namecitydeparture}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
+                                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: 16),
+                SizedBox(width: 16), // Spacing between the two cards
 
-              // Second card
-              Expanded(
-                child: Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ClipRRect(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(15.0),
+                // Second card
+                Expanded(
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(15.0),
+                          ),
+                          child: Image.network(
+                            fligthTicketModel.airportModel!.imageCountryarrive!, // Replace with your asset image path
+                            fit: BoxFit.cover,
+                            height: 150,
+                            width: double.infinity,
+                          ),
                         ),
-                        child: Image.network(
-                          widget.fligthTicketModel.airportModel!.imageCountryarrive!,
-                          fit: BoxFit.cover,
-                          height: 150,
-                          width: double.infinity,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.fligthTicketModel.airportModel!.nameCountryarrive!,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                fligthTicketModel.airportModel!.nameCountryarrive!,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'City name= ${widget.fligthTicketModel.airportModel!.namecityarrive!}.\nduration= ${(widget.fligthTicketModel.duration).toString()} minutes.',
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                            ),
-                          ],
+                              SizedBox(height: 8),
+                              Text(
+                                'City name= ${fligthTicketModel.airportModel!.namecityarrive!}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
+                                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ),
-            ],
+                ),]
           ),
-          SizedBox(height: 20),
+
           Container(
             width: 350,
+            height: 300,
+
+
+
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
+
               color: Colors.white,
               borderRadius: BorderRadius.circular(40),
               boxShadow: [
@@ -167,10 +129,11 @@ class _FlightTicketState extends State<FlightTicket> {
                   offset: Offset(0, 5),
                 ),
               ],
+
             ),
             child: Column(
               children: [
-                // Flight Route
+                // Flight Route (NYC -> SFO)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -178,7 +141,9 @@ class _FlightTicketState extends State<FlightTicket> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.fligthTicketModel.namedeparture!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fligthTicketModel.namedeparture!, //NYC
                           style: TextStyle(
                             fontSize: 24,
                             color: Colors.blue,
@@ -186,17 +151,23 @@ class _FlightTicketState extends State<FlightTicket> {
                           ),
                         ),
                         Text(
-                          truncateText(widget.fligthTicketModel.namedeparturelong!, 10),
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          truncateText(fligthTicketModel.namedeparturelong! , 10),
+                          //fligthTicketModel.namedeparturelong!,//New York
+                          style: TextStyle(color: Colors.grey,fontSize: 14)
+                          ,
                         ),
                       ],
                     ),
                     Icon(Icons.flight_takeoff, color: Colors.blue),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,//
                       children: [
                         Text(
-                          widget.fligthTicketModel.namearrive!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          fligthTicketModel.namearrive!, //SFO
                           style: TextStyle(
                             fontSize: 24,
                             color: Colors.purple,
@@ -204,16 +175,28 @@ class _FlightTicketState extends State<FlightTicket> {
                           ),
                         ),
                         Text(
-                          truncateText(widget.fligthTicketModel.namearrivelong!, 10),
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          truncateText(fligthTicketModel.namearrivelong! , 10),
+                          // fligthTicketModel.namearrivelong!, //San Francisco
+                          style: TextStyle(color: Colors.grey,fontSize: 14),
                         ),
                       ],
                     ),
                   ],
                 ),
                 SizedBox(height: 10),
+                // Flight Duration
+                // Text(
+                //   '6H 30M',
+                //   style: TextStyle(
+                //     fontSize: 16,
+                //     color: Colors.black54,
+                //   ),
+                // ),black54
+                SizedBox(height: 20),
                 Divider(color: Colors.grey[300]),
-                // Flight Details
+                // Flight Details (Time, Date, Flight Number)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -221,7 +204,10 @@ class _FlightTicketState extends State<FlightTicket> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          truncateText(widget.fligthTicketModel.timedeparture!, 10),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          truncateText(fligthTicketModel.timedeparture! , 10),
+                          // fligthTicketModel.timedeparture!,//08:00 AM
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black,
@@ -229,16 +215,21 @@ class _FlightTicketState extends State<FlightTicket> {
                           ),
                         ),
                         Text(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           'Departure date',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          style: TextStyle(color: Colors.grey,fontSize: 14),
                         ),
                       ],
                     ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,//end
                       children: [
                         Text(
-                          truncateText(widget.fligthTicketModel.timearrive!, 10),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          truncateText(fligthTicketModel.timearrive! , 10),
+                          //  fligthTicketModel.timearrive!,//'02:30 PM'
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black,
@@ -246,8 +237,10 @@ class _FlightTicketState extends State<FlightTicket> {
                           ),
                         ),
                         Text(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           'Arrival date',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          style: TextStyle(color: Colors.grey,fontSize: 14),
                         ),
                       ],
                     ),
@@ -273,58 +266,44 @@ class _FlightTicketState extends State<FlightTicket> {
                         Text(
                           'Price',
                           style: TextStyle(fontSize: 18),
+
                         ),
                       ],
                     ),
                     Text(
-                      "\$${widget.fligthTicketModel.price.toString()}",
+                      "\$${fligthTicketModel.price.toString()}", //\$260
                       style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
                       ),
                     ),
+
                   ],
                 ),
-                SizedBox(height: 20),
-                // Book Now Button
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 30),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Color(0xFFFFC1E3),
-                          Color(0xFFBA68C8),
-                        ],
+                          Color(0xFFFFC1E3), // لون وردي فاتح
+                          Color(0xFFBA68C8), ], // Define your gradient colors
                       ),
-                      borderRadius: BorderRadius.circular(14.0),
+                      borderRadius: BorderRadius.circular(14.0), // Adjust radius for rounded corners
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Save the flight ticket information when the button is pressed
-                        saveFlightTicket();
+                        // Button action
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.0),
-                        ),
+                        backgroundColor: Colors.transparent, // Make the button background transparent
+                        shadowColor: Colors.transparent, // Remove the button's shadow
                       ),
-                      child: Center(
-                        child: Text(
-                          "Book Now",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      child: Text('Book now'),
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -332,11 +311,7 @@ class _FlightTicketState extends State<FlightTicket> {
       ),
     );
   }
-
-  String truncateText(String text, int maxLength) {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
-    }
-    return text;
-  }
+}
+String truncateText(String text, int maxLength) {
+  return (text.length > maxLength) ? '${text.substring(0, maxLength)}...' : text;
 }

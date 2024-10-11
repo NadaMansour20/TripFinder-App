@@ -1,19 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:tripfinder_app/CustomWidgets/CustomButton.dart';
 import 'package:tripfinder_app/Ui/GoogleMap.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // استيراد حزمة Firestore
 
 class HotelDetails extends StatefulWidget {
   static const String routName = "hotel_details";
 
   final Properties hotel;
 
-  HotelDetails(this.hotel); // إضافة userId كمعامل
-
+  HotelDetails(this.hotel);
 
   @override
   State<HotelDetails> createState() => _HotelDetailsState();
@@ -28,46 +25,12 @@ class _HotelDetailsState extends State<HotelDetails> {
     super.dispose();
   }
 
-
-  Future<void> add_bookedHotel() async {
-
-    User? user = FirebaseAuth.instance.currentUser;
-    String? userId = user?.uid;
-
-    DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
-
-
-
-    // بيانات الفندق
-    final hotelData = {
-      'booked': true,
-      'name': widget.hotel.name ?? 'Unknown Hotel',
-      'image': widget.hotel.images != null && widget.hotel.images!.isNotEmpty
-          ? widget.hotel.images![0].thumbnail
-          : 'No Image Available',
-      'ratePerNight': widget.hotel.ratePerNight?.lowest.toString() ?? '0',
-      'overallRating': widget.hotel.overallRating ?? 0.0,
-    };
-
-    try {
-      // إضافة بيانات الفندق إلى مجموعة الفنادق الخاصة بالمستخدم
-      await userDoc.collection('hotels_booked').add(hotelData);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Hotel booked successfully!")),
-      );
-    } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to book hotel")),
-      );
-    }
-  }
   @override
   Widget build(BuildContext context) {
     List<String?>? imageUrls = widget.hotel.images?.map((image) => image.thumbnail).toList();
     final List<Ratings>? reviews = widget.hotel.ratings;
     List<String?>? amenities = widget.hotel.amenities?.toList();
-    List<NearbyPlaces>? nearby_places = widget.hotel.nearbyPlaces?.toList();
+    List<NearbyPlaces>? nearby_places=widget.hotel.nearbyPlaces?.toList();
 
     double? latitude = widget.hotel.gpsCoordinates?.latitude?.toDouble();
     double? longitude = widget.hotel.gpsCoordinates?.longitude?.toDouble();
@@ -90,7 +53,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                     itemCount: imageUrls.length,
                     itemBuilder: (context, index) {
                       return Image.network(
-                        imageUrls[index] ?? "",
+                        imageUrls[index]??"",
                         fit: BoxFit.cover,
                         width: MediaQuery.of(context).size.width,
                       );
@@ -130,7 +93,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${widget.hotel.overallRating ?? ""}",
+                          "${widget.hotel.overallRating?? ""}",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -139,7 +102,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                         Padding(
                           padding: const EdgeInsets.all(5),
                           child: RatingBarIndicator(
-                            rating: widget.hotel.overallRating?.toDouble() ?? 0.0,
+                            rating: widget.hotel.overallRating?.toDouble()?? 0.0,
                             itemBuilder: (context, index) => const Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -151,11 +114,8 @@ class _HotelDetailsState extends State<HotelDetails> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      widget.hotel.description ?? " ",
-                      style: TextStyle(fontSize: 15),
-                    ),
+                    SizedBox(height: 10,),
+                    Text(widget.hotel.description??" ",style: TextStyle(fontSize: 15),),
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,16 +164,13 @@ class _HotelDetailsState extends State<HotelDetails> {
                             color: Colors.purple[200],
                           ),
                           SizedBox(width: 10),
-                          Text(amenities[i] ?? " "),
+                          Text(amenities[i]??" "),
                         ],
                       ),
                     SizedBox(height: 15),
                     const Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text(
-                        "Nearby Places",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      child: Text("nearby_places",style: TextStyle(fontWeight: FontWeight.bold),),
                     ),
                     for (int i = 0; i < nearby_places!.length; i++) ...[
                       SizedBox(height: 10), // Add space between each place
@@ -221,18 +178,19 @@ class _HotelDetailsState extends State<HotelDetails> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          nearby_places[i].name ?? " ",
+                          nearby_places[i].name ??" ",
                         ),
                       ),
                     ],
-                    SizedBox(height: 15),
+
+                    SizedBox(height:15),
                     if (latitude != null && longitude != null)
                       LocationButton(latitude: latitude, longitude: longitude),
+
                     SizedBox(height: 3),
                     CustomButton(
                       onTap: () {
-                        // استدعاء دالة تحديث حالة الحجز
-                        add_bookedHotel();
+                        // add to cart
                       },
                       buttonText: "Book Now",
                     ),

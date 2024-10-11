@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:tripfinder_app/models/flight_ticket.dart'; // Your actual path
 import 'package:tripfinder_app/services/flight_service.dart'; // Your actual path
-import 'flight_card.dart'; // Your actual path
+import 'flight_card.dart';// Your actual path
 
 class FlightTicketList extends StatefulWidget {
   final String departureCityCode;
   final String arrivalCityCode;
 
   FlightTicketList({required this.departureCityCode, required this.arrivalCityCode});
+
 
   @override
   _FlightTicketListState createState() => _FlightTicketListState();
@@ -17,6 +18,8 @@ class FlightTicketList extends StatefulWidget {
 class _FlightTicketListState extends State<FlightTicketList> {
   List<FligthTicketModel> tickets = [];
   bool isLoading = true;
+
+
 
   @override
   void initState() {
