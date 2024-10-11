@@ -1,32 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tripfinder_app/Login.dart';  // Import Firebase Auth
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tripfinder_app/Login.dart';
 
-class ProfileScreen extends StatelessWidget {
-  final User? currentUser = FirebaseAuth.instance.currentUser;  // Fetch current logged-in user
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  User? currentUser;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    currentUser = FirebaseAuth.instance.currentUser;
+    fetchUserData(); // استدعاء وظيفة لجلب بيانات المستخدم
+  }
+
+  // دالة لجلب بيانات المستخدم من Firestore
+  Future<void> fetchUserData() async {
+    if (currentUser != null) {
+      var userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .get();
+
+      if (userDoc.exists) {
+        setState(() {
+          nameController.text = userDoc.data()?['username'] ?? 'User';
+          emailController.text = userDoc.data()?['email'] ?? '*****@.com';
+          passwordController.text = '*******';
+        });
+      } else {
+        print('Document does not exist');
+      }
+    } else {
+      print('No user logged in');
+    }
+  }
+
+  Future<void> updateUserData() async {
+    if (currentUser != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser!.uid)
+          .update({
+        'username': nameController.text,
+        'email': emailController.text,
+        'password': passwordController.text,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    String? name = currentUser?.displayName ?? "Trip Finder";  // Display user name
-    String? email = currentUser?.email ?? "example@gmail.com";  // Display user email
-    String password = '********';  // Hide password
-
     return Scaffold(
       appBar: AppBar(
-
+        title: Text('Profile'),
       ),
       body: SafeArea(
-        child: Center(  // Wrap Column with Center to center it
+        child: Center(
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,  // Center elements vertically
-              crossAxisAlignment: CrossAxisAlignment.center,  // Center elements horizontally
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Editable name field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextFormField(
-                    initialValue: name,
+                    controller: nameController,  // يربط TextField بالبيانات
                     decoration: InputDecoration(
                       labelText: 'Name',
                       filled: true,
@@ -44,7 +91,7 @@ class ProfileScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextFormField(
-                    initialValue: email,
+                    controller: emailController,  // يربط TextField بالبيانات
                     decoration: InputDecoration(
                       labelText: 'Email',
                       filled: true,
@@ -58,12 +105,12 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
 
-                // Editable password field
+                // Password field (for display purposes only)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextFormField(
+                    controller: passwordController,  // placeholder للباسورد
                     obscureText: true,
-                    initialValue: password,  // To hide password
                     decoration: InputDecoration(
                       labelText: 'Password',
                       filled: true,
@@ -80,11 +127,12 @@ class ProfileScreen extends StatelessWidget {
                 // Save button
                 ElevatedButton(
                   onPressed: () {
+                    updateUserData();  // استدعاء الدالة لتحديث البيانات
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Success"),
+                          title: Text("Success!"),
                           content: Text("Changes saved successfully!"),
                           actions: [
                             TextButton(
@@ -104,22 +152,20 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   child: Text('Save Changes'),
                 ),
-                SizedBox(height: 20),  // Add some space between buttons
+                SizedBox(height: 20),
 
+                // Logout button
                 ElevatedButton(
                   onPressed: () async {
-                    // Sign out the user from Firebase
                     await FirebaseAuth.instance.signOut();
-
-                    // Navigate to the login screen
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => Login()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple[300], // Purple button
-                    foregroundColor: Colors.white, // White text
+                    backgroundColor: Colors.purple[300],
+                    foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),

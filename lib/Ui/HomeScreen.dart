@@ -1,27 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tripfinder_app/CustomWidgets/flightticket_list.dart';
 import 'package:tripfinder_app/Ui/Booking.dart';
 import 'package:tripfinder_app/Ui/Hotels.dart';
-import 'package:tripfinder_app/services/Flight.dart'; // Import Firebase Auth
+import 'package:tripfinder_app/services/Flight.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   static const String routName = "home";
 
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Get the current user
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    String welcomeMessage = currentUser != null ? 'Welcome, $currentUser' : 'Welcome';
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  User? user;
+  String userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+    fetchUserData(); // استدعاء وظيفة لجلب بيانات المستخدم
+  }
+
+// دالة لجلب بيانات المستخدم من Firestore
+  Future<void> fetchUserData() async {
+    if (user != null) {
+      print('User ID: ${user!.uid}');  // تحقق من أن معرف المستخدم صحيح
+      var userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .get();
+
+      if (userDoc.exists) {
+        print('User Document: ${userDoc.data()}');  // تحقق من البيانات
+        setState(() {
+          userName = userDoc.data()?['username'] ?? 'User';
+          print('User Name: $userName');  // تأكد من أن اسم المستخدم يتم جلبه
+        });
+      } else {
+        print('Document does not exist');
+      }
+    } else {
+      print('No user logged in');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(welcomeMessage), // Display the welcome message
-        actions: [
+        title:SingleChildScrollView(
+          scrollDirection:Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start, // محاذاة النص إلى اليسار
+            children: [
+              Text(
+                'Welcome, $userName',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.purple,
+                ),
+              ),
+            ],
+          ),
+        ),        actions: [
           Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle, // Make the container circular
+              shape: BoxShape.circle, // جعل الحاوية دائرية
             ),
             child: IconButton(
               onPressed: () {
@@ -35,7 +85,7 @@ class HomeScreen extends StatelessWidget {
           onPressed: () {},
           icon: Padding(
             padding: const EdgeInsets.only(left: 9.0),
-            child: Container(), // You can add an icon here if needed
+            child: Container(), // يمكنك إضافة أيقونة هنا إذا لزم الأمر
           ),
         ),
       ),
@@ -43,7 +93,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           Container(
             height: 150,
-            width: double.infinity,
+            width: 1000,
             child: Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Column(

@@ -1,28 +1,60 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:tripfinder_app/Ui/HotelDetails.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HotelCard extends StatefulWidget {
   final Properties hotel;
 
-  HotelCard(this.hotel);
+  HotelCard(this.hotel); // Constructor to receive hotel properties
 
   @override
   State<HotelCard> createState() => _HotelCardState();
 }
 
 class _HotelCardState extends State<HotelCard> {
+  bool isSaved = false; // Track if the hotel is saved
+
+  Future<void> saveHotelToFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userId = user?.uid;
+
+    if (userId == null) return; // Ensure the user is logged in
+
+    DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    // Hotel data to save
+    final hotelData = {
+      'saved': true,
+      'name': widget.hotel.name ?? 'Unknown Hotel',
+      'image': widget.hotel.images != null && widget.hotel.images!.isNotEmpty
+          ? widget.hotel.images![0].thumbnail
+          : 'No Image Available',
+      'ratePerNight': widget.hotel.ratePerNight?.lowest.toString() ?? '0',
+      'overallRating': widget.hotel.overallRating ?? 0.0,
+    };
+
+    try {
+      // Save hotel data to the user's saved hotels collection
+      await userDoc.collection('hotels_saved').add(hotelData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Hotel booked successfully!")),
+      );
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to book hotel")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     String? imageUrl = (widget.hotel.images != null && widget.hotel.images!.isNotEmpty)
         ? widget.hotel.images![0].thumbnail
         : null;
-
-    bool isIconBlack = false;
-
 
     return GestureDetector(
       onTap: () {
@@ -40,24 +72,22 @@ class _HotelCardState extends State<HotelCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // عرض الصورة إذا كانت موجودة
               imageUrl != null
                   ? Image.network(
                 imageUrl,
                 fit: BoxFit.cover,
-                height: 150, // يمكنك ضبط الارتفاع حسب الحاجة
-                width: double.infinity, // لجعل الصورة تمتد على عرض الشاشة بالكامل
+                height: 150,
+                width: double.infinity,
               )
                   : Container(
                 height: 150,
                 width: double.infinity,
-                color: Colors.grey[300], // لون بديل في حال عدم وجود صورة
+                color: Colors.grey[300],
                 child: Center(child: Text('No Image')),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // لو الكلام كتير بتنزله سطر جديد
                   Flexible(
                     child: Text(
                       widget.hotel.name ?? "",
@@ -68,16 +98,17 @@ class _HotelCardState extends State<HotelCard> {
                     ),
                   ),
                   IconButton(
-                    icon: const ImageIcon(
-
-                      AssetImage("assets/images/save.png"),
+                    icon: ImageIcon(
+                      AssetImage(isSaved ? "assets/images/saved.png" : "assets/images/save.png"),
                       size: 40,
                     ),
-
                     onPressed: () {
                       setState(() {
-                        isIconBlack = !isIconBlack; // تغيير حالة اللون عند النقر
+                        isSaved = !isSaved; // Toggle save state
                       });
+
+                      // Call the method to save hotel data to Firestore
+                      saveHotelToFirestore();
                     },
                   ),
                 ],
@@ -85,17 +116,16 @@ class _HotelCardState extends State<HotelCard> {
               SizedBox(height: 3),
               Row(
                 children: [
-                  // التحقق من وجود التقييم
                   Text(
                     "${widget.hotel.overallRating ?? 0.0}",
                     style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
                   ),
                   RatingBarIndicator(
-                    rating: (widget.hotel.overallRating ?? 0.0)
-                        .toDouble(),
+                    rating: (widget.hotel.overallRating ?? 0.0).toDouble(),
                     itemBuilder: (context, index) => const Icon(
                       Icons.star,
                       color: Colors.amber,
@@ -110,9 +140,10 @@ class _HotelCardState extends State<HotelCard> {
               Text(
                 "${widget.hotel.ratePerNight?.lowest.toString() ?? '0'}",
                 style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
               ),
               SizedBox(height: 3),
               const Text(
