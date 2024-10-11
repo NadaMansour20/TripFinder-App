@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -14,6 +15,32 @@ class HotelCard extends StatefulWidget {
 }
 
 class _HotelCardState extends State<HotelCard> {
+
+
+  CollectionReference userLoginData = FirebaseFirestore.instance.collection('userLoginData/userid/hotels');
+  bool _isButtonDisabled = false;
+
+  void _handleButtonClick() {
+    print('Button clicked!');
+    _isButtonDisabled = true;
+    addHotels();
+  }
+  Future<void> addHotels() {
+    // Call the user's CollectionReference to add a new user
+    return userLoginData
+        .add({
+      "images":widget.hotel.images![0].thumbnail,
+      "ratings":widget.hotel.ratePerNight?.lowest,
+      "amenities":widget.hotel.amenities,
+      "latitude":widget.hotel.gpsCoordinates?.latitude,
+      "longitude":widget.hotel.gpsCoordinates?.longitude,
+      "name":widget.hotel.name,
+
+    })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -74,11 +101,8 @@ class _HotelCardState extends State<HotelCard> {
                       size: 40,
                     ),
 
-                    onPressed: () {
-                      setState(() {
-                        isIconBlack = !isIconBlack; // تغيير حالة اللون عند النقر
-                      });
-                    },
+                      onPressed: _isButtonDisabled ? null : _handleButtonClick, // تغيير حالة اللون عند النقر
+
                   ),
                 ],
               ),

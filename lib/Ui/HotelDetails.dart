@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -18,6 +19,8 @@ class HotelDetails extends StatefulWidget {
 
 class _HotelDetailsState extends State<HotelDetails> {
   PageController _pageController = PageController();
+
+
 
   @override
   void dispose() {

@@ -26,7 +26,7 @@ class ApiManager {
 
     var uri = Uri.https(BaseURL, 'search.json', {
       'api_key':
-      "f8227b37913e86e58e0ed9f2c592542c26eced56d2ae9c9d211c3ca542e580d2",
+      "f8deb06e89f6b626f7e49e800ae2f173a11e6a1f2d8b6f7bbff7cc143f430711",
       'q': 'allhotels', // all hotels
       'engine': 'google_hotels',
       'check_in_date': today,
@@ -42,7 +42,7 @@ class ApiManager {
       String checkIn, String checkOut, String Country) async {
     var uri = Uri.https(BaseURL, 'search.json', {
       'api_key':
-      "f8227b37913e86e58e0ed9f2c592542c26eced56d2ae9c9d211c3ca542e580d2",
+      "f8deb06e89f6b626f7e49e800ae2f173a11e6a1f2d8b6f7bbff7cc143f430711",
       'q': Country,
       'engine': 'google_hotels',
       'check_in_date': checkIn,

@@ -10,15 +10,6 @@ class savedFlights extends StatefulWidget {
 
 class _savedFlightsState extends State<savedFlights> {
 
-  List <QueryDocumentSnapshot>data =[];
-  getData()async{
-    QuerySnapshot querySnapshot =  await FirebaseFirestore.instance.collection("flights").get();
-    data.addAll(querySnapshot.docs);
-    setState(() {
-
-    });
-
-  }
 
 
 //for unsave

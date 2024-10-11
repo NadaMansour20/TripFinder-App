@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tripfinder_app/Api/ApiManager.dart';
@@ -46,6 +47,40 @@ class _SaveScreenState extends State<SaveScreen> {
     }
   }
 
+  List <QueryDocumentSnapshot>data =[];
+  getFlights()async{
+    QuerySnapshot querySnapshot =  await FirebaseFirestore.instance.collection("userLoginData/userid/flights").get();
+    data.addAll(querySnapshot.docs);
+    setState(() {
+
+    });
+
+  }
+  List <QueryDocumentSnapshot>data2 =[];
+  getHotels()async{
+    QuerySnapshot querySnapshot =  await FirebaseFirestore.instance.collection("userLoginData/userid/hotels").get();
+    data2.addAll(querySnapshot.docs);
+    setState(() {
+
+    });
+
+  }
+
+  deleteHotels()async{
+    var i;
+    await FirebaseFirestore.instance.collection("userLoginData/userid/hotels").doc(data[i].id).delete();
+    Navigator.of(context).pushReplacementNamed("SaveScreen");
+
+  }
+  deleteFlights()async{
+    var i;
+    await FirebaseFirestore.instance.collection("userLoginData/userid/flights").doc(data[i].id).delete();
+    Navigator.of(context).pushReplacementNamed("SaveScreen");
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +107,7 @@ class _SaveScreenState extends State<SaveScreen> {
                   onPressed: () {
                     setState(() {
                       selectedCategory = 'Hotels';
-                      futureHotels = ApiManager.getAllHotels(); // Load hotels when selected
+                      futureHotels = getHotels(); // Load hotels when selected
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -90,8 +125,8 @@ class _SaveScreenState extends State<SaveScreen> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      selectedCategory = 'Flights';
-                      // You can modify this to load flights from the relevant API when selected
+                      selectedCategory = 'Hotels';
+                      futureHotels = getHotels(); // Load hotels when selected
                     });
                   },
                   style: ElevatedButton.styleFrom(
