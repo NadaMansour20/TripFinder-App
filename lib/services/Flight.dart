@@ -88,7 +88,7 @@ class _FlightState extends State<Flight> {
                   child: Text(
                     selectedFromCityCode == "Select From" ? selectedFromCityCode : "${cities[selectedFromCityCode]} ($selectedFromCityCode)", // Display selected From city
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
-                        color:Colors.blue ),
+                    ),
                   ),
                 ),
               ),
@@ -98,8 +98,7 @@ class _FlightState extends State<Flight> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     selectedToCityCode == "Select To" ? selectedToCityCode : "${cities[selectedToCityCode]} ($selectedToCityCode)", // Display selected To city
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
-                        color:Colors.pink),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),
                   ),
                 ),
               ),
@@ -130,12 +129,9 @@ class _FlightState extends State<Flight> {
           ),
           Container
             (
-               height: 400,
+              height: 400,
 
               child: Image.asset("assets/images/booktickets.avif")),
-          Text(style:TextStyle(fontSize: 15, fontWeight: FontWeight.bold,
-              color:Colors.purple) ,
-              'I wish you a wonderful trip.\n Choose your trip carefully,\n from the options available to you')
         ],
       ),
     );

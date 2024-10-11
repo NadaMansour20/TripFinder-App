@@ -9,9 +9,9 @@ class FligthTicketModel{
   final int? duration;
   final AirportModel? airportModel;
   FligthTicketModel(
-  {required this.namedeparture,required this.timedeparture,required this.namedeparturelong,
-    required this.namearrivelong, required this.duration
-  ,required this.namearrive,required this.timearrive, required this.price, this.airportModel}
+      {required this.namedeparture,required this.timedeparture,required this.namedeparturelong,
+        required this.namearrivelong, required this.duration
+        ,required this.namearrive,required this.timearrive, required this.price, this.airportModel}
       );
 
 }
@@ -29,10 +29,10 @@ class AirportModel{
   AirportModel( {
     required this.namecitydeparture,
     required this.namecityarrive,
-     required this.nameCountrydeparture,
-  required this.imageCountrydeparture,
-      required  this.nameCountryarrive,
-      required this.imageCountryarrive,}
+    required this.nameCountrydeparture,
+    required this.imageCountrydeparture,
+    required  this.nameCountryarrive,
+    required this.imageCountryarrive,}
       );
   factory AirportModel.fromJson(json){
     return AirportModel(

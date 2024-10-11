@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tripfinder_app/Api/ApiManager.dart';
 import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:intl/intl.dart';
+import 'package:tripfinder_app/Ui/HomeScreen.dart';
 import 'package:tripfinder_app/Ui/HotelCard.dart'; // Add this import for date formatting
 
 class Hotels extends StatefulWidget {
@@ -19,6 +20,7 @@ class _HotelsState extends State<Hotels> {
   DateTime? checkOutDate;
   Future<HotelDescription>? futureHotels;
 
+
   @override
   void initState() {
     super.initState();
@@ -26,17 +28,38 @@ class _HotelsState extends State<Hotels> {
     futureHotels = ApiManager.getAllHotels();
   }
 
+  // دالة للحصول على التاريخ الحالي في التنسيق المناسب
+  static String getDefaultDate() {
+    var now = DateTime.now();
+    var formatter = DateFormat('yyyy-MM-dd'); // تنسيق التاريخ
+    return formatter.format(now);
+  }
+
+  // دالة للحصول على تاريخ اليوم مع إضافة عدد من الأيام
+  static String getDatePlusDays(int days) {
+    var futureDate = DateTime.now().add(Duration(days: days)); // إضافة 10 أيام
+    var formatter = DateFormat('yyyy-MM-dd');
+    return formatter.format(futureDate);
+  }
+
+
+
   void searchHotels() {
     String? searchQuery = searchController.text.trim();
     String? checkIn = checkInDate != null ? DateFormat('yyyy-MM-dd').format(checkInDate!) : null;
     String? checkOut = checkOutDate != null ? DateFormat('yyyy-MM-dd').format(checkOutDate!) : null;
 
+
+    String today = getDefaultDate();
+    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+
+
     // Call SearchHotels only if there are search parameters
     if (searchQuery.isNotEmpty || checkIn != null || checkOut != null) {
       setState(() {
         futureHotels = ApiManager.SearchHotels(
-          checkIn ?? '2024-12-26', // Default check-in date
-          checkOut ?? '2024-12-30', // Default check-out date
+          checkIn ?? today, // Default check-in date
+          checkOut ?? futureDate, // Default check-out date
           searchQuery.isNotEmpty ? searchQuery : 'allhotels', // Default search query
         );
       });
@@ -60,7 +83,6 @@ class _HotelsState extends State<Hotels> {
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
         ),
-        leading: Icon(Icons.arrow_back),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
