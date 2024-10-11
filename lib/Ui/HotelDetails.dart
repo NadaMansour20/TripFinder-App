@@ -27,11 +27,11 @@ class _HotelDetailsState extends State<HotelDetails> {
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve hotel data
     List<String?>? imageUrls = widget.hotel.images?.map((image) => image.thumbnail).toList();
     final List<Ratings>? reviews = widget.hotel.ratings;
     List<String?>? amenities = widget.hotel.amenities?.toList();
-    List<NearbyPlaces>? nearby_places = widget.hotel.nearbyPlaces?.toList();
+    List<NearbyPlaces>? nearby_places=widget.hotel.nearbyPlaces?.toList();
+
     double? latitude = widget.hotel.gpsCoordinates?.latitude?.toDouble();
     double? longitude = widget.hotel.gpsCoordinates?.longitude?.toDouble();
 
@@ -43,7 +43,6 @@ class _HotelDetailsState extends State<HotelDetails> {
         padding: const EdgeInsets.all(5),
         child: Column(
           children: [
-            // Hotel Images with smooth indicator
             imageUrls != null && imageUrls.isNotEmpty
                 ? Container(
               height: MediaQuery.of(context).size.height / 3,
@@ -54,7 +53,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                     itemCount: imageUrls.length,
                     itemBuilder: (context, index) {
                       return Image.network(
-                        imageUrls[index] ?? "",
+                        imageUrls[index]??"",
                         fit: BoxFit.cover,
                         width: MediaQuery.of(context).size.width,
                       );
@@ -80,20 +79,21 @@ class _HotelDetailsState extends State<HotelDetails> {
                 ],
               ),
             )
-                : Center(child: Text('No images available')),
+                : Center(
+              child: Text('No images available'),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Display Hotel Rating and Reviews
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${widget.hotel.overallRating ?? ""}",
+                          "${widget.hotel.overallRating?? ""}",
                           style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                         Padding(
                           padding: const EdgeInsets.all(5),
                           child: RatingBarIndicator(
-                            rating: widget.hotel.overallRating?.toDouble() ?? 0.0,
+                            rating: widget.hotel.overallRating?.toDouble()?? 0.0,
                             itemBuilder: (context, index) => const Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -114,14 +114,9 @@ class _HotelDetailsState extends State<HotelDetails> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 10,),
+                    Text(widget.hotel.description??" ",style: TextStyle(fontSize: 15),),
                     SizedBox(height: 10),
-                    // Hotel Description
-                    Text(
-                      widget.hotel.description ?? "No description available",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    SizedBox(height: 10),
-                    // Rate per Night and Reviews Button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -153,7 +148,6 @@ class _HotelDetailsState extends State<HotelDetails> {
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(height: 3),
-                    // Hotel Amenities
                     const Padding(
                       padding: EdgeInsets.all(10),
                       child: Text(
@@ -161,7 +155,8 @@ class _HotelDetailsState extends State<HotelDetails> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                    for (int i = 0; i < (amenities?.length ?? 0); i++)
+                    // عرض وسائل الراحة مع أيقونات
+                    for (int i = 0; i < amenities!.length; i++)
                       Row(
                         children: [
                           Icon(
@@ -169,44 +164,33 @@ class _HotelDetailsState extends State<HotelDetails> {
                             color: Colors.purple[200],
                           ),
                           SizedBox(width: 10),
-                          Text(amenities![i] ?? " "),
+                          Text(amenities[i]??" "),
                         ],
                       ),
                     SizedBox(height: 15),
-                    // Nearby Places
                     const Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text("Nearby Places", style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text("nearby_places",style: TextStyle(fontWeight: FontWeight.bold),),
                     ),
-                    for (int i = 0; i < (nearby_places?.length ?? 0); i++) ...[
-                      SizedBox(height: 10), // Space between each place
+                    for (int i = 0; i < nearby_places!.length; i++) ...[
+                      SizedBox(height: 10), // Add space between each place
+                      // Display the place name
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          nearby_places![i].name ?? " ",
+                          nearby_places[i].name ??" ",
                         ),
                       ),
                     ],
-                    SizedBox(height: 15),
-                    // GPS Button
+
+                    SizedBox(height:15),
                     if (latitude != null && longitude != null)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple[200],
-                        ),
-                        onPressed: () {
-                          GoogleMap.openMap(latitude, longitude);
-                        },
-                        child: Text(
-                          "GPS",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                      LocationButton(latitude: latitude, longitude: longitude),
+
                     SizedBox(height: 3),
-                    // Book Now Button
                     CustomButton(
                       onTap: () {
-                        // Add booking functionality
+                        // add to cart
                       },
                       buttonText: "Book Now",
                     ),
@@ -221,7 +205,6 @@ class _HotelDetailsState extends State<HotelDetails> {
   }
 }
 
-// Dialog for displaying hotel reviews
 class HotelReviewsDialog extends StatelessWidget {
   final List<Ratings> reviews;
 
@@ -234,7 +217,6 @@ class HotelReviewsDialog extends StatelessWidget {
       content: Container(
         width: double.maxFinite,
         child: ListView.builder(
-          shrinkWrap: true,
           itemCount: reviews.length,
           itemBuilder: (context, index) {
             return ListTile(
