@@ -75,7 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, Booking.routName);
+                //Navigator.pushNamed(context, Booking.routName);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Booking()),
+                );
               },
               icon: Image.asset("assets/images/book_icon.jpeg"),
             ),

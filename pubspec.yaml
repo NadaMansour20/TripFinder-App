@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_stripe: ^11.2.0
   http: ^0.13.5
   flutter_rating_bar: ^4.0.0
   smooth_page_indicator: ^1.0.0+2
@@ -38,7 +38,7 @@ dependencies:
   intl: ^0.17.0
   google_maps_flutter: ^2.2.0
   map_launcher: ^3.5.0
-  flutter_stripe: ^11.2.0
+
   cloud_firestore: ^5.4.4
 
 
