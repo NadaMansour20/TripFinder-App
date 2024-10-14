@@ -40,7 +40,7 @@ class _HotelCardState extends State<HotelCard> {
       // Save hotel data to the user's saved hotels collection
       await userDoc.collection('hotels_saved').add(hotelData);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Hotel booked successfully!")),
+        SnackBar(content: Text("Hotel saved successfully!")),
       );
     } catch (e) {
       print(e);

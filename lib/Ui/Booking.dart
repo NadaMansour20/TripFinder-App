@@ -1,242 +1,272 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../stripe_payment/payment_manager.dart';
-//import 'package:flutter_stripe_payment/stripe_payment/payment_manager.dart';
 
-class Booking extends StatelessWidget {
-  //static const String routName = "mainScreen";
-  const Booking({super.key});
+class Booking extends StatefulWidget {
+  @override
+  BookingState createState() => BookingState();
+}
+
+class BookingState extends State<Booking> {
+  User? user = FirebaseAuth.instance.currentUser;
+  List<DocumentSnapshot> savedHotels = [];
+  List<DocumentSnapshot> savedFlights = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadSavedHotels();
+    loadSavedFlights();
+  }
+
+  Future<List<DocumentSnapshot>> fetchSavedHotels() async {
+    List<DocumentSnapshot> savedHotels = [];
+
+    if (user != null) {
+      try {
+        var userDoc = FirebaseFirestore.instance.collection('users').doc(user!.uid);
+        var hotelsSnapshot = await userDoc.collection('hotels_booked').get();
+        savedHotels = hotelsSnapshot.docs;
+        print("Fetched saved hotels: ${savedHotels.length}");
+      } catch (error) {
+        print("Error fetching saved hotels: $error");
+      }
+    } else {
+      print("User is not logged in.");
+    }
+
+    return savedHotels;
+  }
+
+  Future<List<DocumentSnapshot>> fetchSavedFlights() async {
+    List<DocumentSnapshot> savedFlights = [];
+
+    if (user != null) {
+      try {
+        var userDoc = FirebaseFirestore.instance.collection('users').doc(user!.uid);
+        var flightsSnapshot = await userDoc.collection('flights').get();
+        savedFlights = flightsSnapshot.docs;
+        print("Fetched saved flights: ${savedFlights.length}");
+      } catch (error) {
+        print("Error fetching saved flights: $error");
+      }
+    } else {
+      print("User is not logged in.");
+    }
+
+    return savedFlights;
+  }
+
+  void loadSavedHotels() async {
+    List<DocumentSnapshot> hotels = await fetchSavedHotels();
+    setState(() {
+      savedHotels = hotels;
+    });
+  }
+
+  void loadSavedFlights() async {
+    List<DocumentSnapshot> flights = await fetchSavedFlights();
+    setState(() {
+      savedFlights = flights;
+    });
+  }
+
+  void onButtonPressed() {
+   PaymentManager.makePayment(40, "EGP");
+
+  }
+
+  Future<void> deleteHotel(String hotelId) async {
+    if (user != null) {
+      try {
+        var userDoc = FirebaseFirestore.instance.collection('users').doc(user!.uid);
+        await userDoc.collection('hotels_booked').doc(hotelId).delete();
+      } catch (error) {
+        print("Error deleting hotel: $error");
+      }
+    }
+  }
+
+  Future<void> deleteFlight(String flightId) async {
+    if (user != null) {
+      try {
+        var userDoc = FirebaseFirestore.instance.collection('users').doc(user!.uid);
+        await userDoc.collection('flights').doc(flightId).delete();
+      } catch (error) {
+        print("Error deleting flight: $error");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Center(child: Text('Booking')),
+      ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: ()=>PaymentManager.makePayment(40, "EGP"),
-            child: Text("Pay 20 dollar"),
-          )
+          // Title for Hotels List
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Hotels',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: savedHotels.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+              itemCount: savedHotels.length,
+              itemBuilder: (context, index) {
+                var hotelData = savedHotels[index].data() as Map<String, dynamic>;
+                var hotelId = savedHotels[index].id; // Get hotel document ID
+
+                return Dismissible(
+                  key: Key(hotelId), // Unique key for each hotel
+                  background: Container(
+                    color: Colors.red,
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  direction: DismissDirection.endToStart, // Swipe from right to left
+                  onDismissed: (direction) {
+                    deleteHotel(hotelId).then((_) {
+                      setState(() {
+                        savedHotels.removeAt(index); // Remove from the local list
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Hotel removed')),
+                      );
+                    });
+                  },
+                  child: Card(
+                    elevation: 5,
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(
+                            hotelData['image'] ?? 'https://via.placeholder.com/150',
+                            fit: BoxFit.cover,
+                            height: 150,
+                            width: double.infinity,
+                          ),
+                          SizedBox(height: 8),
+                          Text(hotelData['name'] ?? 'Unnamed Hotel',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Text("Price per Night: ${hotelData['ratePerNight'] ?? 'Unknown Price'}"),
+                          Text("Overall Rating:"),
+                          RatingBarIndicator(
+                            rating: (hotelData['overallRating'] ?? 0.0).toDouble(),
+                            itemBuilder: (context, index) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            itemCount:savedHotels.length,
+                            itemSize: 20.0,
+                            direction: Axis.horizontal,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Title for Flights List
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Flights',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: savedFlights.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+              itemCount: savedFlights.length,
+              itemBuilder: (context, index) {
+                var flightData = savedFlights[index].data() as Map<String, dynamic>;
+                var flightId = savedFlights[index].id; // Get flight document ID
+
+                return Dismissible(
+                  key: Key(flightId), // Unique key for each flight
+                  background: Container(
+                    color: Colors.red,
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                  direction: DismissDirection.endToStart, // Swipe from right to left
+                  onDismissed: (direction) {
+                    deleteFlight(flightId).then((_) {
+                      setState(() {
+                        savedFlights.removeAt(index); // Remove from the local list
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Flight removed')),
+                      );
+                    });
+                  },
+                  child: Card(
+                    elevation: 5,
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10), // تعديل padding مثل بطاقة الفندق
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("DepartureCity: ${flightData['departureCity'] ?? 'Unknown Departure'}"),
+                          Text("ArrivalCity: ${flightData['arrivalCity'] ?? 'Unknown Arrival'}"),
+                          Text("Departure Time: ${flightData['departureTime'] ?? 'Unknown Time'}"),
+                          Text("Arrival Time: ${flightData['arrivalTime'] ?? 'Unknown Time'}"),
+                          Text("Duration: ${flightData['duration'] ?? 'Unknown Duration'} minutes"),
+                          Text("Price: \$${flightData['price'] ?? 'Unknown Price'}"),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: onButtonPressed,
+              child: Text(
+                'Payment',
+                style: TextStyle(fontSize: 20),
+              ),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.purple[300],
+                minimumSize: Size(double.infinity, 50),
+              ).copyWith(
+                elevation: MaterialStateProperty.all(5),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart'; // استيراد مكتبة Firestore
-// import 'package:firebase_auth/firebase_auth.dart'; // استيراد مكتبة Firebase Authentication
-// import 'package:tripfinder_app/payment/PayMentMethod.dart';
-// import 'package:flutter_rating_bar/flutter_rating_bar.dart'; // استيراد مكتبة RatingBar
-//
-// class Booking extends StatefulWidget {
-//   static const String routName = "book";
-//
-//   @override
-//   _BookingState createState() => _BookingState();
-// }
-//
-// class _BookingState extends State<Booking> {
-//   // قائمة لتخزين بيانات الرحلات والفنادق
-//   List<Map<String, dynamic>> flightData = [];
-//   List<Map<String, dynamic>> hotelData = [];
-//   User? currentUser; // متغير لتخزين معلومات المستخدم الحالي
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchFlightData(); // تحميل بيانات الرحلات عند بدء التطبيق
-//     fetchHotelData(); // تحميل بيانات الفنادق عند بدء التطبيق
-//     fetchCurrentUser(); // تحميل بيانات المستخدم الحالي
-//   }
-//
-//   // دالة لتحميل بيانات المستخدم الحالي
-//   Future<void> fetchCurrentUser() async {
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser; // الحصول على المستخدم الحالي
-//       if (user != null) {
-//         // إذا كان المستخدم موجودًا، احصل على بياناته من Firestore
-//         DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-//         setState(() {
-//           currentUser = user; // تخزين معلومات المستخدم
-//         });
-//         // يمكنك استخدام بيانات المستخدم (مثل userDoc.data()) حسب الحاجة
-//         print('User data: ${userDoc.data()}');
-//       }
-//     } catch (e) {
-//       print("Error fetching user data: $e");
-//     }
-//   }
-//
-//   // دالة لتحميل بيانات الرحلات من Firestore
-//   Future<void> fetchFlightData() async {
-//     try {
-//       QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('flights').get();
-//       setState(() {
-//         flightData = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-//       });
-//     } catch (e) {
-//       print("Error fetching flight data: $e");
-//     }
-//   }
-//
-//   // دالة لتحميل بيانات الفنادق من Firestore
-//   Future<void> fetchHotelData() async {
-//     try {
-//       QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('hotels').get();
-//       setState(() {
-//         hotelData = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-//       });
-//     } catch (e) {
-//       print("Error fetching hotel data: $e");
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Center(child: Text('Booking'))),
-//       body: SingleChildScrollView(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             // عرض معلومات المستخدم
-//             if (currentUser != null) ...[
-//               Padding(
-//                 padding: const EdgeInsets.all(16.0),
-//                 child: Text(
-//                   'Welcome, ${currentUser!.email}', // عرض البريد الإلكتروني للمستخدم
-//                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//                 ),
-//               ),
-//             ],
-//             // عرض بيانات الرحلات
-//             Column(
-//               children: flightData.map((flight) {
-//                 return Card(
-//                   elevation: 4,
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(15.0),
-//                   ),
-//                   child: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: <Widget>[
-//                       ClipRRect(
-//                         borderRadius: BorderRadius.vertical(
-//                           top: Radius.circular(15.0),
-//                         ),
-//                         child: Image.network(
-//                           flight['imageCountryDeparture'],
-//                           fit: BoxFit.cover,
-//                           height: 150,
-//                           width: double.infinity,
-//                         ),
-//                       ),
-//                       Padding(
-//                         padding: const EdgeInsets.all(16.0),
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Text(
-//                               flight['nameCountryDeparture'],
-//                               style: TextStyle(
-//                                 fontSize: 20,
-//                                 fontWeight: FontWeight.bold,
-//                               ),
-//                             ),
-//                             SizedBox(height: 8),
-//                             Text(
-//                               'City: ${flight['nameCityDeparture']}. Duration: ${flight['duration']} minutes.',
-//                               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 );
-//               }).toList(),
-//             ),
-//
-//             SizedBox(height: 20),
-//
-//             // عرض بيانات الفنادق
-//             Column(
-//               children: hotelData.map((hotel) {
-//                 return Card(
-//                   margin: EdgeInsets.all(15),
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(10.0),
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Image.network(
-//                           hotel['imageUrl'],
-//                           fit: BoxFit.cover,
-//                           height: 150,
-//                           width: double.infinity,
-//                         ),
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                           children: [
-//                             Flexible(
-//                               child: Text(
-//                                 hotel['name'],
-//                                 style: const TextStyle(
-//                                   fontSize: 20,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                         SizedBox(height: 3),
-//                         Text(
-//                           "${hotel['overallRating'] ?? 0.0}",
-//                           style: const TextStyle(
-//                               fontSize: 20,
-//                               fontWeight: FontWeight.bold,
-//                               color: Colors.grey),
-//                         ),
-//                         RatingBarIndicator(
-//                           rating: (hotel['overallRating'] ?? 0.0).toDouble(),
-//                           itemBuilder: (context, index) => const Icon(
-//                             Icons.star,
-//                             color: Colors.amber,
-//                           ),
-//                           itemCount: 5,
-//                           itemSize: 30.0,
-//                           direction: Axis.horizontal,
-//                         ),
-//                         SizedBox(height: 3),
-//                         Text(
-//                           "\$${hotel['ratePerNight']['lowest'].toString()}",
-//                           style: const TextStyle(
-//                               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
-//                         ),
-//                         SizedBox(height: 3),
-//                         const Text(
-//                           "/night",
-//                           style: TextStyle(color: Colors.grey),
-//                         ),
-//                         SizedBox(height: 3),
-//                       ],
-//                     ),
-//                   ),
-//                 );
-//               }).toList(),
-//             ),
-//
-//             SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: ()=>PaymentManager.makePayment(40, "EGP"),
-//               child: Text("Payment"),
-//             )
-//
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

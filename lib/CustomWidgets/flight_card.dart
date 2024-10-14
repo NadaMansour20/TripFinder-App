@@ -1,40 +1,52 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/flight_ticket.dart';
-import 'CustomButton.dart';
 
-
-class FlightTicket extends StatelessWidget {
+class FlightTicket extends StatefulWidget {
   FlightTicket({super.key, required this.fligthTicketModel});
-
   final FligthTicketModel fligthTicketModel;
 
-  CollectionReference userLoginData = FirebaseFirestore.instance.collection('userLoginData/userid/flights');
-  bool _isButtonDisabled = false;
+  @override
+  State<FlightTicket> createState() => _FlightTicketState();
+}
 
-  void _handleButtonClick() {
-    print('Button clicked!');
-addFlights();
-      _isButtonDisabled = true;
-  }
-  Future<void> addFlights() {
-    return userLoginData
-        .add({
-    'nameCountrydeparture': fligthTicketModel.airportModel!.nameCountrydeparture,
-    'imageCountrydeparture': fligthTicketModel.airportModel!.imageCountrydeparture,
-    'namecitydeparture': fligthTicketModel.airportModel!.namecitydeparture,
-    'namecityarrive': fligthTicketModel.airportModel!.namecityarrive,
-    'nameCountryarrive': fligthTicketModel.airportModel!.nameCountryarrive,
-    'imageCountryarrive': fligthTicketModel.airportModel!.imageCountryarrive,
-    'savedAt': Timestamp.now(),
-    'price':fligthTicketModel.price
+class _FlightTicketState extends State<FlightTicket> {
+  Future<void> saveFlightTicket() async {
+    // Get the current user ID
+    User? user = FirebaseAuth.instance.currentUser;
 
+    if (user != null) {
+      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
 
-    })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+      final flightData = {
+        'departure': widget.fligthTicketModel.namedeparture,
+        'arrival': widget.fligthTicketModel.namearrive,
+        'duration': widget.fligthTicketModel.duration,
+        'price': widget.fligthTicketModel.price,
+        'departureTime': widget.fligthTicketModel.timedeparture,
+        'arrivalTime': widget.fligthTicketModel.timearrive,
+        'departureCity': widget.fligthTicketModel.airportModel!.namecitydeparture,
+        'arrivalCity': widget.fligthTicketModel.airportModel!.namecityarrive,
+      };
+
+      try {
+        await userDoc.collection('flights').add(flightData); // Save flight data under the user's flight collection
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Flight ticket booked successfully!")),
+        );
+
+      } catch (e) {
+        print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to save flight ticket")),
+        );
+
+      }
+    } else {
+      print("No user is signed in");
+    }
   }
 
   @override
@@ -43,7 +55,7 @@ addFlights();
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align the cards with space in between
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // First card
               Expanded(
@@ -60,7 +72,7 @@ addFlights();
                           top: Radius.circular(15.0),
                         ),
                         child: Image.network(
-                          fligthTicketModel.airportModel!.imageCountrydeparture!, // Replace with your asset image path
+                          widget.fligthTicketModel.airportModel!.imageCountrydeparture!,
                           fit: BoxFit.cover,
                           height: 150,
                           width: double.infinity,
@@ -72,7 +84,7 @@ addFlights();
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              fligthTicketModel.airportModel!.nameCountrydeparture!,
+                              widget.fligthTicketModel.airportModel!.nameCountrydeparture!,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -80,7 +92,7 @@ addFlights();
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'City name= ${fligthTicketModel.airportModel!.namecitydeparture}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
+                              'City name= ${widget.fligthTicketModel.airportModel!.namecitydeparture}.\nduration= ${(widget.fligthTicketModel.duration).toString()} minutes.',
                               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                             ),
                           ],
@@ -90,7 +102,7 @@ addFlights();
                   ),
                 ),
               ),
-              SizedBox(width: 16), // Spacing between the two cards
+              SizedBox(width: 16),
 
               // Second card
               Expanded(
@@ -107,7 +119,7 @@ addFlights();
                           top: Radius.circular(15.0),
                         ),
                         child: Image.network(
-                          fligthTicketModel.airportModel!.imageCountryarrive!, // Replace with your asset image path
+                          widget.fligthTicketModel.airportModel!.imageCountryarrive!,
                           fit: BoxFit.cover,
                           height: 150,
                           width: double.infinity,
@@ -119,8 +131,7 @@ addFlights();
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-
-                              fligthTicketModel.airportModel!.nameCountryarrive!,
+                              widget.fligthTicketModel.airportModel!.nameCountryarrive!,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -128,7 +139,7 @@ addFlights();
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'City name= ${fligthTicketModel.airportModel!.namecityarrive!}.\nduration= ${(fligthTicketModel.duration).toString()} minutes.',
+                              'City name= ${widget.fligthTicketModel.airportModel!.namecityarrive!}.\nduration= ${(widget.fligthTicketModel.duration).toString()} minutes.',
                               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                             ),
                           ],
@@ -143,7 +154,6 @@ addFlights();
           SizedBox(height: 20),
           Container(
             width: 350,
-            //height: 320,
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -158,7 +168,7 @@ addFlights();
             ),
             child: Column(
               children: [
-                // Flight Route (NYC -> SFO)
+                // Flight Route
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -166,7 +176,7 @@ addFlights();
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          fligthTicketModel.namedeparture!,
+                          widget.fligthTicketModel.namedeparture!,
                           style: TextStyle(
                             fontSize: 24,
                             color: Colors.blue,
@@ -174,7 +184,7 @@ addFlights();
                           ),
                         ),
                         Text(
-                          truncateText(fligthTicketModel.namedeparturelong!, 10),
+                          truncateText(widget.fligthTicketModel.namedeparturelong!, 10),
                           style: TextStyle(color: Colors.grey, fontSize: 14),
                         ),
                       ],
@@ -184,7 +194,7 @@ addFlights();
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          fligthTicketModel.namearrive!,
+                          widget.fligthTicketModel.namearrive!,
                           style: TextStyle(
                             fontSize: 24,
                             color: Colors.purple,
@@ -192,7 +202,7 @@ addFlights();
                           ),
                         ),
                         Text(
-                          truncateText(fligthTicketModel.namearrivelong!, 10),
+                          truncateText(widget.fligthTicketModel.namearrivelong!, 10),
                           style: TextStyle(color: Colors.grey, fontSize: 14),
                         ),
                       ],
@@ -201,7 +211,7 @@ addFlights();
                 ),
                 SizedBox(height: 10),
                 Divider(color: Colors.grey[300]),
-                // Flight Details (Time, Date, Flight Number)
+                // Flight Details
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -209,12 +219,11 @@ addFlights();
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          truncateText(fligthTicketModel.timedeparture!, 10),
+                          truncateText(widget.fligthTicketModel.timedeparture!, 10),
                           style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
@@ -227,7 +236,7 @@ addFlights();
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          truncateText(fligthTicketModel.timearrive!, 10),
+                          truncateText(widget.fligthTicketModel.timearrive!, 10),
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black,
@@ -266,7 +275,7 @@ addFlights();
                       ],
                     ),
                     Text(
-                      "\$${fligthTicketModel.price.toString()}",
+                      "\$${widget.fligthTicketModel.price.toString()}",
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -275,7 +284,7 @@ addFlights();
                     ),
                   ],
                 ),
-                SizedBox(height: 20), // Add space before the button
+                SizedBox(height: 20),
                 // Book Now Button
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -283,20 +292,34 @@ addFlights();
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Color(0xFFFFC1E3), // لون وردي فاتح
-                          Color(0xFFBA68C8), // Define your gradient colors
+                          Color(0xFFFFC1E3),
+                          Color(0xFFBA68C8),
                         ],
                       ),
-                      borderRadius: BorderRadius.circular(14.0), // Adjust radius for rounded corners
+                      borderRadius: BorderRadius.circular(14.0),
                     ),
                     child: ElevatedButton(
-                      onPressed: _isButtonDisabled ? null : _handleButtonClick,
-
+                      onPressed: () {
+                        // Save the flight ticket information when the button is pressed
+                        saveFlightTicket();
+                      },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent, // Make the button background transparent
-                        shadowColor: Colors.transparent, // Remove the button's shadow
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
                       ),
-                      child: Text('Book now', style: TextStyle(color: Colors.white)),
+                      child: Center(
+                        child: Text(
+                          "Book Now",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -307,8 +330,11 @@ addFlights();
       ),
     );
   }
-}
 
-String truncateText(String text, int maxLength) {
-  return (text.length > maxLength) ? '${text.substring(0, maxLength)}...' : text;
+  String truncateText(String text, int maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
+  }
 }
