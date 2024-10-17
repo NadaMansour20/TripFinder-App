@@ -4,7 +4,7 @@ and he cansave or book. On the other hand, the application allows flights by kno
 user’s location and the place he wants to goto, and the flight is provided to him at the appropriate price for him.
 
 # Technologies Used
--Firebase
+-Firebase </br>
 -Api
 
 # Video 
