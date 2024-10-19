@@ -1,22 +1,20 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart'; // لإضافة دعم التنسيق
+import 'package:intl/intl.dart';
 
 import '../models/flight_ticket.dart';
 
 class NewServiceFlight {
   final Dio dio;
 
-  // دالة للحصول على التاريخ الحالي في التنسيق المناسب
   static String getDefaultDate() {
     var now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd'); // تنسيق التاريخ
+    var formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(now);
   }
 
-  // دالة للحصول على تاريخ اليوم مع إضافة عدد من الأيام
   static String getDatePlusDays(int days) {
-    var futureDate = DateTime.now().add(Duration(days: days)); // إضافة 10 أيام
+    var futureDate = DateTime.now().add(Duration(days: days));
     var formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(futureDate);
   }
@@ -25,7 +23,7 @@ class NewServiceFlight {
 
   Future<List<FligthTicketModel>> getTicket() async {
     String today = getDefaultDate();
-    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+    String futureDate = getDatePlusDays(10);
 
 
     var response = await dio.get(
@@ -61,7 +59,7 @@ class NewServiceFlight {
   Future<List<FligthTicketModel>> getspecialTicket({required String departureid,
     required String arrivalidid}) async {
     String today = getDefaultDate();
-    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+    String futureDate = getDatePlusDays(10);
 
 
     var response = await dio.get(

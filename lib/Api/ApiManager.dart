@@ -6,23 +6,21 @@ import 'package:tripfinder_app/Api/HotelDescription.dart';
 class ApiManager {
   static const String BaseURL = 'serpapi.com';
 
-  // دالة للحصول على التاريخ الحالي في التنسيق المناسب
   static String getDefaultDate() {
     var now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd'); // تنسيق التاريخ
+    var formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(now);
   }
 
-  // دالة للحصول على تاريخ اليوم مع إضافة عدد من الأيام
   static String getDatePlusDays(int days) {
-    var futureDate = DateTime.now().add(Duration(days: days)); // إضافة 10 أيام
+    var futureDate = DateTime.now().add(Duration(days: days));
     var formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(futureDate);
   }
 
   static Future<HotelDescription> getAllHotels() async {
     String today = getDefaultDate();
-    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+    String futureDate = getDatePlusDays(10);
 
     var uri = Uri.https(BaseURL, 'search.json', {
       'api_key':

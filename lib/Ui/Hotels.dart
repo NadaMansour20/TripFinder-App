@@ -4,7 +4,7 @@ import 'package:tripfinder_app/Api/ApiManager.dart';
 import 'package:tripfinder_app/Api/HotelDescription.dart';
 import 'package:intl/intl.dart';
 import 'package:tripfinder_app/Ui/HomeScreen.dart';
-import 'package:tripfinder_app/Ui/HotelCard.dart'; // Add this import for date formatting
+import 'package:tripfinder_app/Ui/HotelCard.dart';
 
 class Hotels extends StatefulWidget {
   static const String routName="hotel";
@@ -28,16 +28,16 @@ class _HotelsState extends State<Hotels> {
     futureHotels = ApiManager.getAllHotels();
   }
 
-  // دالة للحصول على التاريخ الحالي في التنسيق المناسب
+
   static String getDefaultDate() {
     var now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd'); // تنسيق التاريخ
+    var formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(now);
   }
 
-  // دالة للحصول على تاريخ اليوم مع إضافة عدد من الأيام
+
   static String getDatePlusDays(int days) {
-    var futureDate = DateTime.now().add(Duration(days: days)); // إضافة 10 أيام
+    var futureDate = DateTime.now().add(Duration(days: days));
     var formatter = DateFormat('yyyy-MM-dd');
     return formatter.format(futureDate);
   }
@@ -51,7 +51,7 @@ class _HotelsState extends State<Hotels> {
 
 
     String today = getDefaultDate();
-    String futureDate = getDatePlusDays(10); // اليوم الحالي + 10 أيام
+    String futureDate = getDatePlusDays(10);
 
 
     // Call SearchHotels only if there are search parameters

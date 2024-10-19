@@ -23,23 +23,22 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
-    fetchUserData(); // استدعاء وظيفة لجلب بيانات المستخدم
+    fetchUserData();
   }
 
-// دالة لجلب بيانات المستخدم من Firestore
   Future<void> fetchUserData() async {
     if (user != null) {
-      print('User ID: ${user!.uid}');  // تحقق من أن معرف المستخدم صحيح
+      print('User ID: ${user!.uid}');
       var userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user!.uid)
           .get();
 
       if (userDoc.exists) {
-        print('User Document: ${userDoc.data()}');  // تحقق من البيانات
+        print('User Document: ${userDoc.data()}');
         setState(() {
           userName = userDoc.data()?['username'] ?? 'User';
-          print('User Name: $userName');  // تأكد من أن اسم المستخدم يتم جلبه
+          print('User Name: $userName');
         });
       } else {
         print('Document does not exist');
@@ -56,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title:SingleChildScrollView(
           scrollDirection:Axis.horizontal,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, // محاذاة النص إلى اليسار
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 'Welcome, $userName',
@@ -71,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),        actions: [
           Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle, // جعل الحاوية دائرية
+              shape: BoxShape.circle,
             ),
             child: IconButton(
               onPressed: () {
@@ -89,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {},
           icon: Padding(
             padding: const EdgeInsets.only(left: 9.0),
-            child: Container(), // يمكنك إضافة أيقونة هنا إذا لزم الأمر
+            child: Container(),
           ),
         ),
       ),

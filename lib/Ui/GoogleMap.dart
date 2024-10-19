@@ -14,10 +14,8 @@ class LocationButton extends StatelessWidget {
       onPressed: () async {
         final availableMaps = await MapLauncher.installedMaps;
 
-        // اختيار أول تطبيق خرائط متاح
         final selectedMap = availableMaps.first;
 
-        // فتح تطبيق الخرائط مع الإحداثيات
         await selectedMap.showMarker(
           coords: Coords(latitude, longitude),
           title: "Location",

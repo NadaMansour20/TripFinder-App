@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-   CustomTextField({  //شيلت ال const
+   CustomTextField({
     super.key,
     this.hintText,
     this.isPasswordField = false,

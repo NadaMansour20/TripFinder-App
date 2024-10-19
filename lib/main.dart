@@ -12,7 +12,6 @@ import 'package:tripfinder_app/Ui/OnBoarding.dart';
 import 'package:tripfinder_app/Ui/WelcomePage.dart';
 import 'package:tripfinder_app/Ui/intro_pages/GetStartedPage.dart';
 import 'package:tripfinder_app/firebase_options.dart';
-import 'package:tripfinder_app/payment/PayMentKeys.dart';
 import 'package:tripfinder_app/services/Flight.dart';
 import 'package:tripfinder_app/stripe_payment/stripe_keys.dart';
 

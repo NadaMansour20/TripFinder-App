@@ -17,7 +17,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   String? email;
   String? pass;
-  String? username; // لإضافة اسم المستخدم
+  String? username;
   GlobalKey<FormState> formkey1 = GlobalKey<FormState>();
   bool isLoading = false;
   bool _isPasswordObscure = true;

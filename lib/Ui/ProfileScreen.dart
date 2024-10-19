@@ -18,10 +18,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     currentUser = FirebaseAuth.instance.currentUser;
-    fetchUserData(); // استدعاء وظيفة لجلب بيانات المستخدم
+    fetchUserData();
   }
 
-  // دالة لجلب بيانات المستخدم من Firestore
+
   Future<void> fetchUserData() async {
     if (currentUser != null) {
       var userDoc = await FirebaseFirestore.instance
@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextFormField(
-                    controller: nameController,  // يربط TextField بالبيانات
+                    controller: nameController,
                     decoration: InputDecoration(
                       labelText: 'Name',
                       filled: true,
@@ -91,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextFormField(
-                    controller: emailController,  // يربط TextField بالبيانات
+                    controller: emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       filled: true,
@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Save button
                 ElevatedButton(
                   onPressed: () {
-                    updateUserData();  // استدعاء الدالة لتحديث البيانات
+                    updateUserData();
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
