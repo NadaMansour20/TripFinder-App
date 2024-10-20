@@ -60,12 +60,12 @@ class _HotelDetailsState extends State<HotelDetails> {
       await userDoc.collection('hotels_booked').add(hotelData);
       print("Hotel booking data saved successfully.");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Hotel booked successfully!")),
+        const SnackBar(content: Text("Hotel booked successfully!")),
       );
     } catch (e) {
       print("Error saving hotel booking data: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to book hotel")),
+        const SnackBar(content: Text("Failed to book hotel")),
       );
     }
   }
@@ -170,7 +170,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                       children: [
                         Text(
                           widget.hotel.ratePerNight?.lowest?.toString() ?? '0',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                               color: Colors.green),
@@ -204,7 +204,6 @@ class _HotelDetailsState extends State<HotelDetails> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-// عرض وسائل الراحة مع أيقونات
                     for (int i = 0; i < amenities!.length; i++)
                       Row(
                         children: [
@@ -223,8 +222,7 @@ class _HotelDetailsState extends State<HotelDetails> {
                           style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     for (int i = 0; i < nearby_places!.length; i++) ...[
-                      SizedBox(height: 10), // Add space between each place
-// Display the place name
+                      SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(

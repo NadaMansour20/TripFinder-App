@@ -27,7 +27,7 @@ class _LoginState extends State<Login> {
     return userLoginData
         .add({
       "email": email,
-      "pass": pass
+      "pass": pass,
     })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));
@@ -56,7 +56,7 @@ class _LoginState extends State<Login> {
                           style: TextStyle(
                             fontSize: 35,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFFBA68C8), // Light purple color
+                            color: Color(0xFFBA68C8),
                           ),
                         ),
                       ],
@@ -71,7 +71,7 @@ class _LoginState extends State<Login> {
                           style: TextStyle(
                             fontSize: 27,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFFBA68C8), // Light purple color
+                            color: Color(0xFFBA68C8),
                           ),
                         ),
                       ],
@@ -114,14 +114,16 @@ class _LoginState extends State<Login> {
                             showAlertDialog(context, 'User not found');
                           } else if (ex.code == 'wrong-password') {
                             showAlertDialog(context, 'Wrong password');
+                          } else {
+                            showAlertDialog(context, 'Firebase Auth Error: ${ex.message}');
                           }
                         } catch (ex) {
-                          showAlertDialog(context, 'There was an error');
+                          showAlertDialog(context, 'An error occurred: ${ex.toString()}');
                         }
 
                         isLoading = false;
                         setState(() {});
-                      } else {}
+                      }
                       addUserLoginData();
                     },
                     buttonText: "Sign In",
@@ -171,7 +173,7 @@ class _LoginState extends State<Login> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
           ],

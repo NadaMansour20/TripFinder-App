@@ -75,7 +75,7 @@ class BookingState extends State<Booking> {
   }
 
   void onButtonPressed() {
-   PaymentManager.makePayment(40, "EGP");
+   PaymentManager.makePayment(40000, "EGP");
 
   }
 
