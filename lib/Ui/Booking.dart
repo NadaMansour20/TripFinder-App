@@ -75,8 +75,7 @@ class BookingState extends State<Booking> {
   }
 
   void onButtonPressed() {
-   PaymentManager.makePayment(40000, "EGP");
-
+    PaymentManager.makePayment(40000, "EGP");
   }
 
   Future<void> deleteHotel(String hotelId) async {
@@ -119,7 +118,12 @@ class BookingState extends State<Booking> {
           ),
           Expanded(
             child: savedHotels.isEmpty
-                ? Center(child: CircularProgressIndicator())
+                ? Center(
+              child: Text(
+                'No booked hotel',
+                style: TextStyle(fontSize: 18),
+              ),
+            )
                 : ListView.builder(
               itemCount: savedHotels.length,
               itemBuilder: (context, index) {
@@ -176,7 +180,7 @@ class BookingState extends State<Booking> {
                               Icons.star,
                               color: Colors.amber,
                             ),
-                            itemCount:savedHotels.length,
+                            itemCount: savedHotels.length,
                             itemSize: 20.0,
                             direction: Axis.horizontal,
                           ),
@@ -198,7 +202,12 @@ class BookingState extends State<Booking> {
           ),
           Expanded(
             child: savedFlights.isEmpty
-                ? Center(child: CircularProgressIndicator())
+                ? Center(
+              child: Text(
+                'No booked flight',
+                style: TextStyle(fontSize: 18),
+              ),
+            )
                 : ListView.builder(
               itemCount: savedFlights.length,
               itemBuilder: (context, index) {
